@@ -1,0 +1,23 @@
+{
+  "resources": [
+    {
+      "name": "http://terminal.local:4173/styles.css",
+      "initiatorType": "link"
+    },
+    {
+      "name": "http://terminal.local:4173/app.js",
+      "initiatorType": "script"
+    },
+    {
+      "name": "http://terminal.local:4173/simulation.js",
+      "initiatorType": "script"
+    },
+    {
+      "name": "http://terminal.local:4173/sprites.js",
+      "initiatorType": "script"
+    }
+  ],
+  "external": [],
+  "contentSecurityPolicy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
+  "appErrors": []
+}

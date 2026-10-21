@@ -1,0 +1,32 @@
+✔ bolt → titan: ownership, receiving, return and work restart (7.683409ms)
+✔ bolt → scout: ownership, receiving, return and work restart (2.45104ms)
+✔ titan → bolt: ownership, receiving, return and work restart (3.023996ms)
+✔ titan → scout: ownership, receiving, return and work restart (2.591448ms)
+✔ scout → bolt: ownership, receiving, return and work restart (1.898173ms)
+✔ scout → titan: ownership, receiving, return and work restart (2.321869ms)
+✔ BOLT → titan: no slide; vanish and direct reappearance in front (0.348705ms)
+✔ BOLT → scout: no slide; vanish and direct reappearance in front (0.111635ms)
+✔ pause freezes every property in work (0.651472ms)
+✔ pause freezes every property in charge (0.273094ms)
+✔ pause freezes every property in vanish (0.213335ms)
+✔ pause freezes every property in transit (0.114569ms)
+✔ pause freezes every property in appear (0.115601ms)
+✔ pause freezes every property in offer (0.111134ms)
+✔ pause freezes every property in returnVanish (0.109011ms)
+✔ pause freezes every property in receiverReturn (0.131064ms)
+✔ pause freezes every property in start (0.123953ms)
+✔ spam, invalid input, reset during vanished state and restart (0.466669ms)
+✔ automatic deck covers all six directions without fixed sequence (0.445728ms)
+✔ 30 simulated minutes: bounded history, count consistent, no duplicates (123.238299ms)
+✔ auto can stop after current transaction; paused idle auto does not progress (0.239674ms)
+✔ reduced motion keeps all six functional transactions (0.271691ms)
+✔ production client has no external API, analytics, secret or dynamic code calls (1.130851ms)
+✔ orientation/viewport changes preserve spacing during a transaction (0.191943ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 231.973836
