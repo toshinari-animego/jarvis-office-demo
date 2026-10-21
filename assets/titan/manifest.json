@@ -1,0 +1,28 @@
+{
+  "source_name": "タイタン キャラクターコンセプトシート.png",
+  "source_sha256": "740b1c3fde71f365ed29fc61fff93c691af439168bad1938c86d6d4f3e0707e0",
+  "source_dimensions": [
+    1448,
+    1086
+  ],
+  "crop": [
+    731,
+    68,
+    996,
+    311
+  ],
+  "part_dimensions": [
+    265,
+    243
+  ],
+  "parts": [
+    "head",
+    "arm-l",
+    "arm-r",
+    "leg-l",
+    "leg-r",
+    "torso"
+  ],
+  "processing": "Manual polygon masks; alpha edge feather 0.35px, navy-board fringe removed. No AI generation, no inpainting. Parts retain source pixels.",
+  "limits": "Single front view; shoulders/hips use overlapping source pixels. Independent elbow joints, side/back walk cycles and raster facial-expression changes are not implemented."
+}
