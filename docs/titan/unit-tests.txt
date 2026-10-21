@@ -1,0 +1,36 @@
+
+> jarvis-office-demo@0.4.0 test
+> node --test tests/*.test.mjs
+
+✔ bolt → titan: ownership, receiving, return and work restart (7.871211ms)
+✔ bolt → scout: ownership, receiving, return and work restart (2.458758ms)
+✔ titan → bolt: ownership, receiving, return and work restart (3.087417ms)
+✔ titan → scout: ownership, receiving, return and work restart (2.615457ms)
+✔ scout → bolt: ownership, receiving, return and work restart (2.006281ms)
+✔ scout → titan: ownership, receiving, return and work restart (1.836947ms)
+✔ BOLT → titan: no slide; vanish and direct reappearance in front (0.383726ms)
+✔ BOLT → scout: no slide; vanish and direct reappearance in front (0.117141ms)
+✔ pause freezes every property in work (0.427013ms)
+✔ pause freezes every property in charge (0.362205ms)
+✔ pause freezes every property in vanish (0.160605ms)
+✔ pause freezes every property in transit (0.098362ms)
+✔ pause freezes every property in appear (0.144241ms)
+✔ pause freezes every property in offer (0.0755ms)
+✔ pause freezes every property in returnVanish (0.11413ms)
+✔ pause freezes every property in receiverReturn (0.154918ms)
+✔ pause freezes every property in start (0.125965ms)
+✔ spam, invalid input, reset during vanished state and restart (0.459082ms)
+✔ automatic deck covers all six directions without fixed sequence (0.606683ms)
+✔ 30 simulated minutes: bounded history, count consistent, no duplicates (117.527187ms)
+✔ auto can stop after current transaction; paused idle auto does not progress (0.216999ms)
+✔ reduced motion keeps all six functional transactions (0.249936ms)
+✔ production client has no external API, analytics, secret or dynamic code calls (0.962577ms)
+✔ orientation/viewport changes preserve spacing during a transaction (0.147164ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 232.503323

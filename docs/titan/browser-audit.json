@@ -1,0 +1,95 @@
+{
+  "resources": [
+    {
+      "name": "http://terminal.local:4173/styles.css",
+      "initiatorType": "link",
+      "transferSize": 14071,
+      "decodedBodySize": 13771,
+      "durationMs": 8.700000000186265,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/app.js",
+      "initiatorType": "script",
+      "transferSize": 12856,
+      "decodedBodySize": 12556,
+      "durationMs": 8.799999999813735,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/simulation.js",
+      "initiatorType": "script",
+      "transferSize": 10748,
+      "decodedBodySize": 10448,
+      "durationMs": 5.6000000005587935,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/sprites.js",
+      "initiatorType": "script",
+      "transferSize": 9028,
+      "decodedBodySize": 8728,
+      "durationMs": 6.400000000372529,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/titan-rig.js",
+      "initiatorType": "script",
+      "transferSize": 1140,
+      "decodedBodySize": 840,
+      "durationMs": 6.1000000005587935,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/leg-l.png",
+      "initiatorType": "image",
+      "transferSize": 10730,
+      "decodedBodySize": 10430,
+      "durationMs": 8,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/leg-r.png",
+      "initiatorType": "image",
+      "transferSize": 9841,
+      "decodedBodySize": 9541,
+      "durationMs": 14.700000000186265,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/arm-l.png",
+      "initiatorType": "image",
+      "transferSize": 25069,
+      "decodedBodySize": 24769,
+      "durationMs": 15.100000000558794,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/head.png",
+      "initiatorType": "image",
+      "transferSize": 22436,
+      "decodedBodySize": 22136,
+      "durationMs": 15.200000000186265,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/arm-r.png",
+      "initiatorType": "image",
+      "transferSize": 23391,
+      "decodedBodySize": 23091,
+      "durationMs": 15.300000000745058,
+      "responseStatus": 200
+    },
+    {
+      "name": "http://terminal.local:4173/assets/titan/torso.png",
+      "initiatorType": "image",
+      "transferSize": 36468,
+      "decodedBodySize": 36168,
+      "durationMs": 14.700000000186265,
+      "responseStatus": 200
+    }
+  ],
+  "external": [],
+  "contentSecurityPolicy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'",
+  "appErrors": []
+}

@@ -48,7 +48,7 @@ test('auto can stop after current transaction; paused idle auto does not progres
 });
 test('reduced motion keeps all six functional transactions',()=>{for(const [from,to]of EDGES){const sim=new Simulation({reduced:true});sim.request(from,to);assert.ok(sim.current.phases.every(p=>p.duration<=400));finish(sim);assert.equal(sim.count,1);}});
 test('production client has no external API, analytics, secret or dynamic code calls',()=>{
- const files=['index.html','styles.css','app.js','simulation.js','sprites.js'];
+ const files=['index.html','styles.css','app.js','simulation.js','sprites.js','titan-rig.js'];
  for(const name of files){const source=fs.readFileSync(name,'utf8');assert.doesNotMatch(source,/\b(fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|eval)\s*\(/,name);assert.doesNotMatch(source,/\b(?:sk-proj-|sk_live_|sk_test_|ghp_|github_pat_)[A-Za-z0-9_]{12,}/,name);assert.doesNotMatch(source,/https?:\/\/(?!www\.w3\.org)/,name);}
  assert.match(fs.readFileSync('index.html','utf8'),/connect-src 'none'/);
 });

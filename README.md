@@ -33,3 +33,15 @@ Runtime consists of five small text files and requires no dependency install or 
 This is DEMO / SIMULATION throughout. No real business data, storage, cookies, analytics, external assets, AI, paid APIs, keys or production integration. `connect-src 'none'` blocks browser fetch, WebSocket and similar connections. Only same-origin static assets load. No changes to `jarvis-core`, Cloudflare, Stripe or any external service.
 
 The base is v0.3 commit `92ad2b3b41e14236fe50462920d7152064dbb58d`; main is preserved. See [validation report](docs/validation-v0.4.md) for actual results and limitations. Cloud Chrome width checks are not iPhone/iPad Safari or WebKit simulator checks. Actual Safari performance and subjective animation approval remain owner review items.
+
+## TITAN biological design trial (PR #1)
+
+The default TITAN in this branch is the **source-derived biological concept**: six transparent PNG layers under the same animation hooks. This is a comparison trial, not final adoption. BOLT, SCOUT, the original SVG sprites and `simulation.js` remain unchanged.
+
+Use **旧TITAN / 新TITAN** above the office to switch without restarting a transaction. `?titan=old` opens the original by default. Reset clears the simulated work and keeps the currently selected design.
+
+`/docs/review.html` adds width presets, old/new switching, and buttons to freeze TITAN at idle, walking or receiving. Press **全体を表示** to see the full app again. The six-direction UI test also switches the skin 20 times per pair while paused, checks that the other two heroes remain identical, and verifies completion.
+
+This is a six-part 2D cutout rig. Head reaction, shoulder/hip motion, weight shifts, two-arm receiving, return and a raised-arm completion reaction are implemented. It is not a new 3D model or a frame-by-frame side/back walk cycle. Raster eyelids, mouth/expression variants and independent elbows are not implemented. The source front view is 265×243 pixels; keep it at the small office scale.
+
+See [TITAN trial validation and comparison](docs/titan/validation.md). No paid generation, external AI/API, dependency or hosting setup is required. Public preview URLs must be verified and recorded in PR #1; do not change GitHub Pages or merge main.

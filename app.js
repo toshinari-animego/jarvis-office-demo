@@ -1,19 +1,22 @@
 import { Simulation, IDS } from './simulation.js';
 import { sprite } from './sprites.js';
+import { titanSprite } from './titan-rig.js';
 const $ = id => document.getElementById(id);
 const stage = $('stage'), motion = matchMedia('(prefers-reduced-motion: reduce)');
 const sim = new Simulation({ reduced: motion.matches });
+let titanSkin = new URLSearchParams(location.search).get('titan') === 'old' ? 'old' : 'new';
 const nodes = Object.fromEntries(IDS.map(id => {
-  const el = $('a-'+id); el.querySelector('.actor').innerHTML = sprite(id);
+  const el = $('a-'+id); el.querySelector('.actor').innerHTML = id === 'titan' && titanSkin === 'new' ? titanSprite() : sprite(id);
+  if(id==='titan')el.dataset.skin=titanSkin;
   if (id !== 'scout') el.querySelector('.artifact').innerHTML = $('a-scout').querySelector('.artifact').innerHTML;
   const parts = Object.fromEntries(['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'].map(name => [name, el.querySelector('.'+name)]));
   return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),...parts}];
 }));
 let width = stage.clientWidth, charWidth = nodes.bolt.el.offsetWidth, last = 0, previousRevision = -1, logged = '', selectionHint = '';
-function size() { width = stage.clientWidth; charWidth = nodes.bolt.el.offsetWidth; sim.setClearance((nodes.bolt.el.offsetWidth * .98 / width) * 1000); }
+function size() { width = stage.clientWidth; charWidth = nodes.bolt.el.offsetWidth; sim.setClearance((nodes.bolt.el.offsetWidth * 1.09 / width) * 1000); }
 new ResizeObserver(size).observe(stage); size();
 motion.addEventListener('change', () => { sim.reduced = motion.matches; });
-function transform(node, angle, cx, cy, x=0, y=0) { if (node) node.setAttribute('transform',`translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${angle.toFixed(2)} ${cx} ${cy})`); }
+function transform(node, angle, cx, cy, x=0, y=0) { if(node?.dataset.pivot)[cx,cy]=node.dataset.pivot.split(' ').map(Number); if (node) node.setAttribute('transform',`translate(${x.toFixed(2)} ${y.toFixed(2)}) rotate(${angle.toFixed(2)} ${cx} ${cy})`); }
 function drawHero(pose, time, snapshot) {
   const n = nodes[pose.id], id = pose.id, mode = pose.mode, p = pose.progress, t = time / 1000, reduced = sim.reduced;
   n.el.style.left = `${pose.x / 10}%`; n.el.style.top = `${pose.y / 7}%`;
@@ -36,6 +39,11 @@ function drawHero(pose, time, snapshot) {
     if (mode === 'proud') { rotate=id==='bolt'?-7*Math.sin(p*Math.PI):2; dy-=Math.sin(p*Math.PI)*3; arms=id==='bolt'?-23:5; }
   }
   n.actor.style.transform=`translateY(${dy.toFixed(2)}px) rotate(${rotate.toFixed(2)}deg) scale(${scaleX.toFixed(3)},${scaleY.toFixed(3)})`;
+  if(id==='titan' && titanSkin==='new' && mode==='proud' && !reduced) { arms=-30*Math.sin(p*Math.PI); dy-=Math.sin(p*Math.PI)*3; n.actor.style.transform=`translateY(${dy.toFixed(2)}px) rotate(${(-3*Math.sin(p*Math.PI)).toFixed(2)}deg)`; }
+  if(id==='titan' && titanSkin==='new' && !reduced) {
+    if(mode==='receive')arms=snapshot.phase==='offer'?55*smoothOut(Math.min(1,p/.35)):55;
+    if(mode==='walk' && pose.file)arms=50;
+  }
   const visible = pose.visible ? (mode==='appear' ? Math.max(.15,p) : 1) : 0;
   n.hero.style.opacity = visible;
   n.file.hidden = !pose.file || !pose.visible;
@@ -57,6 +65,10 @@ function drawHero(pose, time, snapshot) {
   transform(n.head,head,70,85,0,mode==='notice'&&!reduced?-p*3:0);
   transform(n['arm-l'], mode==='receive' ? -arms : arms,38,94);
   transform(n['arm-r'], mode==='receive' ? arms : -arms,102,94);
+  if(id==='titan' && titanSkin==='new' && !reduced){
+    if(mode==='walk' && pose.file){transform(n['arm-l'],-arms,40,58);transform(n['arm-r'],arms,101,58);}
+    if(mode==='proud'){transform(n['arm-l'],5,40,58);transform(n['arm-r'],-135*Math.sin(p*Math.PI),101,58);}
+  }
   transform(n['leg-l'],legs,54,132);transform(n['leg-r'],-legs,88,132);
   if(n.pupils) transform(n.pupils,0,70,60, reduced?0:Math.sin(t*1.2)*2.2, reduced?0:Math.cos(t)*1.2);
   const blink = !reduced && (t+IDS.indexOf(id)*1.2)%4.7 > 4.56;
@@ -75,6 +87,9 @@ function drawHero(pose, time, snapshot) {
 }
 function smoothOut(p){return 1-Math.pow(1-p,3)}
 function updateUI(s) {
+  $('titanOldBtn').setAttribute('aria-pressed',String(titanSkin==='old'));
+  $('titanNewBtn').setAttribute('aria-pressed',String(titanSkin==='new'));
+  $('titanVersion').textContent=titanSkin==='new'?'新TITAN · 生物型／原画6パーツ':'旧TITAN · ロボット型／SVG';
   for(const id of IDS) { nodes[id].speech.textContent=s.poses[id].speech; nodes[id].status.textContent=s.paused?'一時停止 · '+s.poses[id].status:s.poses[id].status; nodes[id].dot.classList.toggle('active',s.poses[id].status!=='待機'&&!s.paused); }
   $('playState').textContent=s.paused?'PAUSED':s.auto?'AUTO PLAY':s.busy?'MANUAL HANDOFF':'STANDBY';
   $('counter').textContent=s.count; $('missionNumber').textContent=String(s.count+1).padStart(2,'0');
@@ -93,6 +108,15 @@ function updateUI(s) {
 }
 function render(force=false) {const s=sim.snapshot(); for(const pose of Object.values(s.poses))drawHero(pose,s.elapsed,s);$('missionProgress').style.width=`${s.missionProgress*100}%`;$('wallProgress').setAttribute('width',String(s.missionProgress*177));if(force||s.revision!==previousRevision){updateUI(s);previousRevision=s.revision;} }
 function action(fn){selectionHint='';last=0;fn();render(true);}
+function setTitanSkin(skin) {
+  if (!['old','new'].includes(skin) || skin===titanSkin) return;
+  titanSkin=skin; const n=nodes.titan;
+  n.actor.innerHTML=skin==='new'?titanSprite():sprite('titan');n.el.dataset.skin=skin;
+  for(const part of ['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'])n[part]=n.el.querySelector('.'+part);
+  render(true); // Display-only: do not reset the simulation clock, owner or timeline.
+}
+$('titanOldBtn').addEventListener('click',()=>setTitanSkin('old'));
+$('titanNewBtn').addEventListener('click',()=>setTitanSkin('new'));
 $('autoBtn').addEventListener('click',()=>action(()=>{sim.setAuto(!sim.auto);if(sim.auto&&sim.paused){sim.setPaused(false);if(!sim.current)sim.next();}}));
 $('pauseBtn').addEventListener('click',()=>action(()=>sim.setPaused(!sim.paused)));
 $('resetBtn').addEventListener('click',()=>action(()=>{sim.reset();logged='';$('log').replaceChildren();}));
