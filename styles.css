@@ -49,3 +49,8 @@
 #threeStatus{grid-column:1/-1;line-height:1.55;font-size:10px;color:#a9c9d9;margin:1px 0}
 .rig-switch .button:disabled{opacity:.48}
 @media(max-width:690px){.rig-view-buttons{width:100%}.rig-view-buttons button{flex:1}}
+
+/* BOLT model-inspection view: character-only canvas on top of the unchanged mission room. */
+.stage.mode-3d.bolt-focus .agent{display:none}
+#boltFocusBtn{min-height:44px;min-width:143px}
+#boltFocusBtn[aria-pressed="true"]{background:#a2ddea;color:#133343;border-color:#c4f2fa}
