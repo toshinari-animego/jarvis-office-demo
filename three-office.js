@@ -210,7 +210,7 @@ export function createThreeOffice(stage,onFailure=()=>{}){
     const currentWidth=stage.clientWidth,currentHeight=stage.clientHeight;
     const changed=currentWidth!==lastWidth||currentHeight!==lastHeight;
     // Keep a 30 FPS ceiling on mobile: preserve simulation time and all DOM controls.
-    if(!changed&&snapshot.elapsed-lastPaint<33)return;
+    if(!changed&&snapshot.elapsed>=lastPaint&&snapshot.elapsed-lastPaint<33)return;
     lastPaint=snapshot.elapsed;lastWidth=currentWidth;lastHeight=currentHeight;
     const ww=resize();
     gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
