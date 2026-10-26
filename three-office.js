@@ -198,6 +198,7 @@ export function createThreeOffice(stage,onFailure=()=>{}){
    projection=I();projection[0]=2/worldWidth;projection[5]=2/14;projection[10]=-.033333;
    return worldWidth;
   }
+  let lastPaint=-Infinity, lastWidth=0, lastHeight=0;
   const onLost=e=>{e.preventDefault();unavailable=true;onFailure('3D描画が失われました。2Dに切り替えます。');};
   const onRestored=()=>{unavailable=true;onFailure('3D復帰はページ再読み込み後に試してください。');};
   canvas.addEventListener('webglcontextlost',onLost,false);
@@ -206,6 +207,11 @@ export function createThreeOffice(stage,onFailure=()=>{}){
   return {canvas,isAvailable:()=>!unavailable,draw(snapshot,reduced=false){
    if(unavailable||dead||!snapshot)return;
    try{
+    const currentWidth=stage.clientWidth,currentHeight=stage.clientHeight;
+    const changed=currentWidth!==lastWidth||currentHeight!==lastHeight;
+    // Keep a 30 FPS ceiling on mobile: preserve simulation time and all DOM controls.
+    if(!changed&&snapshot.elapsed-lastPaint<33)return;
+    lastPaint=snapshot.elapsed;lastWidth=currentWidth;lastHeight=currentHeight;
     const ww=resize();
     gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);gl.disable(gl.CULL_FACE);
     gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
