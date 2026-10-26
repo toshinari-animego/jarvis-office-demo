@@ -202,6 +202,7 @@ export function createThreeOffice(stage,onFailure=()=>{}){
   }
   let lastPaint=-Infinity, lastWidth=0, lastHeight=0;
   let boltModel='v2';
+  let boltFocus=false;
   const boltContext={render,ball,line,T,Z,Y,S};
   const onLost=e=>{e.preventDefault();unavailable=true;onFailure('3D描画が失われました。2Dに切り替えます。');};
   const onRestored=()=>{unavailable=true;onFailure('3D復帰はページ再読み込み後に試してください。');};
@@ -210,6 +211,8 @@ export function createThreeOffice(stage,onFailure=()=>{}){
   stage.append(canvas);
   return {canvas,isAvailable:()=>!unavailable,
   getBoltModel:()=>boltModel,
+  getBoltFocus:()=>boltFocus,
+  setBoltFocus(value){boltFocus=!!value;lastPaint=-Infinity;return boltFocus;},
   setBoltModel(value){
     if(value!=='v2'&&value!=='old')return false;
     boltModel=value;lastPaint=-Infinity;return true;
@@ -228,10 +231,18 @@ export function createThreeOffice(stage,onFailure=()=>{}){
     for(const id of ['scout','bolt','titan']){
      const pose=snapshot.poses[id];
      if(!pose||!pose.visible)continue;
+     if(boltFocus&&id!=='bolt')continue;
      const d=pose3D(id,pose,snapshot.elapsed,reduced);
-     let root=T(I(),(pose.x/1000-.5)*ww,(.5-pose.y/700)*14+d.lift,0);
-     root=Y(root,d.heading);
-     root=Z(root,-d.lean);
+     let root=boltFocus
+       ?T(I(),0,-2.1,.4)
+       :T(I(),(pose.x/1000-.5)*ww,(.5-pose.y/700)*14+d.lift,0);
+     if(boltFocus){
+       root=Y(root,reduced?0:Math.sin(snapshot.elapsed/1900)*.32);
+       root=S(root,2.05,2.05,2.05);
+     }else{
+       root=Y(root,d.heading);
+       root=Z(root,-d.lean);
+     }
      if(id==='bolt'){
        if(boltModel==='v2')drawBoltV2(boltContext,root,d);
        else boltOld(root,d);
