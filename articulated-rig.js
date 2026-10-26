@@ -14,8 +14,8 @@ const shapes = {
   titan:{size:[170,178], layers:[
     ['leg-l','M82 128L117 122 134 145 127 178 87 178 76 158Z',104,136],
     ['leg-r','M121 123L154 123 169 148 164 178 130 178 114 158Z',134,135],
-    ['arm-r','M137 70L156 73 170 90 170 132 146 146 130 115Z',144,86],
-    ['arm-l','M53 64L91 73 107 91 107 112 98 149 75 160 32 151 24 126 26 98Z',84,89]
+    ['arm-r','M137 99L162 103 170 124 161 145 139 137 132 118Z',145,110],
+    ['arm-l','M32 94L83 95 106 110 99 149 75 160 32 151 24 126Z',82,109]
   ]},
   scout:{size:[170,157], layers:[
     ['scarf-a','M99 79L112 89 99 113 70 141 20 141 10 129 23 109 59 95Z',110,91],
@@ -49,8 +49,8 @@ export function rigAngles(id, mode, progress, seconds, reduced=false, direction=
   if(mode==='notice')result['arm-r']-=9*wave;
   if(mode==='offer'){result['arm-l']-=24*wave;result['arm-r']+=18*wave;}
   if(mode==='receive'){
-    result['arm-l']-=id==='titan'?24:18;
-    result['arm-r']+=id==='titan'?20:14;
+    result['arm-l']-=id==='titan'?14:18;
+    result['arm-r']+=id==='titan'?10:14;
   }
   if(mode==='proud'){result['arm-r']-=19*wave;result['arm-l']-=6*wave;}
   if(id==='bolt'){
@@ -61,7 +61,7 @@ export function rigAngles(id, mode, progress, seconds, reduced=false, direction=
   }
   if(id==='titan'){
     if(walk&&carrying){result['arm-l']-=6;result['arm-r']+=6;}
-    if(mode==='receive'){result['arm-l']-=6;result['arm-r']+=8;}
+    if(mode==='receive'){result['arm-l']-=4;result['arm-r']+=5;}
     if(mode==='proud')result['arm-r']-=12*wave;
   }
   if(id==='scout'){
@@ -102,6 +102,10 @@ export function createArticulatedRig(id,uri) {
     elements[key]={group,cx,cy};
   }
   defs.append(cut);
+  // Keep a faint uncut texture under TITAN's swinging fists to hide cutout seams.
+  if(id==='titan'){
+    const underlay=make('g',{opacity:'0.28'});addImage(underlay);root.append(underlay);
+  }
   for(const key of ['scarf-a','scarf-b','leg-l','leg-r'])if(elements[key])root.append(elements[key].group);
   const body=make('g',{mask:'url(#'+prefix+'-base)'});
   addImage(body);root.append(body);
