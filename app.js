@@ -134,6 +134,11 @@ function drawHero(pose, time, snapshot) {
 }
 function smoothOut(p){return 1-Math.pow(1-p,3)}
 function updateUI(s) {
+  const bolt3d=threeOffice?.getBoltModel?.()||'old';
+  $('bolt3dNewBtn').setAttribute('aria-pressed',String(bolt3d==='v2'));
+  $('bolt3dOldBtn').setAttribute('aria-pressed',String(bolt3d==='old'));
+  $('bolt3dNewBtn').disabled=viewMode!=='3d';
+  $('bolt3dOldBtn').disabled=viewMode!=='3d';
   $('view3dBtn').setAttribute('aria-pressed',String(viewMode === '3d'));
   $('view2dBtn').setAttribute('aria-pressed',String(viewMode === '2d'));
   $('view3dBtn').disabled=!threeOffice || !threeOffice.isAvailable();
@@ -191,6 +196,15 @@ function setCrewSkin(id, skin) {
     $('threeStatus').textContent='旧デザインの比較表示は2Dモードへ切り替えました。';
   }
   render(true);
+}
+for(const [model,element] of [['v2','bolt3dNewBtn'],['old','bolt3dOldBtn']]){
+  $(element).addEventListener('click',()=>{
+    if(viewMode!=='3d'||!threeOffice?.setBoltModel(model))return;
+    $('threeStatus').textContent=model==='v2'
+      ?'BOLT改良3D：丸型ヘルメット・曲面バイザー・立体装甲・青黄スカーフの比較試作。'
+      :'旧BOLT 3D：単純な球体を中心に構成した比較版。';
+    render(true);
+  });
 }
 $('view3dBtn').addEventListener('click',()=>{
   if(!threeOffice || !threeOffice.isAvailable())return;
