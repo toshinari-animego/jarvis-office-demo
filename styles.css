@@ -25,3 +25,12 @@
 .crew-skin-group .trial-buttons button{flex:1;min-width:0}
 .crew-trials>p{grid-column:1/-1;font-size:10px;color:#a9bfcb;margin:1px 0 0;line-height:1.5}
 @media(max-width:690px){.crew-trials{grid-template-columns:1fr}.crew-skin-group{padding:9px}.crew-trials>p{font-size:9px}.crew-skin-group>span{font-size:9px}.crew-skin-group .trial-buttons button{font-size:11px}}
+
+
+/* Articulated approved-art layers share the same framing as the static fallback. */
+.actor .approved-rig{position:absolute;inset:auto;left:-16%;bottom:-2%;width:132%;height:140%;overflow:visible;opacity:0;pointer-events:none;filter:drop-shadow(0 5px 3px #061322b8)}
+.agent.titan .actor .approved-rig{left:-33%;bottom:-4%;width:166%;height:158%}
+.agent.scout .actor .approved-rig{left:-25%;bottom:0;width:150%;height:145%}
+.agent.bolt .actor .approved-rig{left:-16%;bottom:-1%;width:132%;height:144%}
+.approved-rig [data-part]{transform-box:view-box;pointer-events:none}
+@media(prefers-reduced-motion:reduce){.approved-rig [data-part]{transition:none!important;animation:none!important}}
