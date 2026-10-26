@@ -1,0 +1,9 @@
+NOTE 雷化の全フレームは観測できませんでした（コアテストで別途確認）。
+PASS BOLT → TITAN / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS BOLT → SCOUT / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS TITAN → BOLT / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS TITAN → SCOUT / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS SCOUT → BOLT / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS SCOUT → TITAN / pause・spam・新旧20切替・受領・復帰・作業開始
+PASS リセット・自動再生・一時停止の連打30回
+UI TEST COMPLETE / 2026-10-21T13:09:56.998Z

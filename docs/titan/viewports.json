@@ -1,0 +1,542 @@
+[
+  {
+    "viewport": 320,
+    "scrollWidth": 320,
+    "stage": {
+      "width": 304,
+      "height": 430
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 64
+      },
+      {
+        "id": "a-bolt",
+        "width": 64
+      },
+      {
+        "id": "a-titan",
+        "width": 64
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 137.5,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 137.5,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 96.65625,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 96.671875,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 96.671875,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 89.984375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 90,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 86.015625,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 96.65625,
+        "height": 167,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 96.671875,
+        "height": 167,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 96.65625,
+        "height": 167,
+        "outside": false
+      }
+    ]
+  },
+  {
+    "viewport": 375,
+    "scrollWidth": 375,
+    "stage": {
+      "width": 351,
+      "height": 445
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 64
+      },
+      {
+        "id": "a-bolt",
+        "width": 64
+      },
+      {
+        "id": "a-titan",
+        "width": 64
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 161,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 161,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 112.328125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 112.34375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 112.328125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 111.484375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 111.5,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 90.015625,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 112.328125,
+        "height": 171,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 112.328125,
+        "height": 171,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 112.34375,
+        "height": 171,
+        "outside": false
+      }
+    ]
+  },
+  {
+    "viewport": 390,
+    "scrollWidth": 390,
+    "stage": {
+      "width": 366,
+      "height": 445
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 64
+      },
+      {
+        "id": "a-bolt",
+        "width": 64
+      },
+      {
+        "id": "a-titan",
+        "width": 64
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 168.5,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 168.5,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 117.328125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 117.34375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 117.328125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 118.984375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 119,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 90.015625,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 117.328125,
+        "height": 171,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 117.328125,
+        "height": 171,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 117.34375,
+        "height": 171,
+        "outside": false
+      }
+    ]
+  },
+  {
+    "viewport": 768,
+    "scrollWidth": 768,
+    "stage": {
+      "width": 728,
+      "height": 460
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 72
+      },
+      {
+        "id": "a-bolt",
+        "width": 72
+      },
+      {
+        "id": "a-titan",
+        "width": 72
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 80.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 101.59375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 236,
+        "height": 179.5,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 236,
+        "height": 179.5,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 236,
+        "height": 179.5,
+        "outside": false
+      }
+    ]
+  },
+  {
+    "viewport": 1024,
+    "scrollWidth": 1024,
+    "stage": {
+      "width": 960,
+      "height": 585.59375
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 96
+      },
+      {
+        "id": "a-bolt",
+        "width": 96
+      },
+      {
+        "id": "a-titan",
+        "width": 96
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 80.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 101.59375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 170.84375,
+        "height": 177.5,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 170.84375,
+        "height": 177.5,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 170.84375,
+        "height": 177.5,
+        "outside": false
+      }
+    ]
+  },
+  {
+    "viewport": 1156,
+    "scrollWidth": 1156,
+    "stage": {
+      "width": 1092,
+      "height": 666.109375
+    },
+    "characters": [
+      {
+        "id": "a-scout",
+        "width": 100
+      },
+      {
+        "id": "a-bolt",
+        "width": 100
+      },
+      {
+        "id": "a-titan",
+        "width": 100
+      }
+    ],
+    "buttonsAndCards": [
+      {
+        "element": "titanOldBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "titanNewBtn",
+        "width": 94,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "autoBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "pauseBtn",
+        "width": 80.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "resetBtn",
+        "width": 101.59375,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "from",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "to",
+        "width": 99,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "handoffBtn",
+        "width": 104.03125,
+        "height": 44,
+        "outside": false
+      },
+      {
+        "element": "card bolt-card",
+        "width": 195.875,
+        "height": 177.5,
+        "outside": false
+      },
+      {
+        "element": "card titan-card",
+        "width": 195.875,
+        "height": 177.5,
+        "outside": false
+      },
+      {
+        "element": "card scout-card",
+        "width": 195.875,
+        "height": 177.5,
+        "outside": false
+      }
+    ]
+  }
+]
