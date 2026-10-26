@@ -139,6 +139,9 @@ function updateUI(s) {
   $('bolt3dOldBtn').setAttribute('aria-pressed',String(bolt3d==='old'));
   $('bolt3dNewBtn').disabled=viewMode!=='3d';
   $('bolt3dOldBtn').disabled=viewMode!=='3d';
+  $('boltFocusBtn').disabled=viewMode!=='3d';
+  $('boltFocusBtn').setAttribute('aria-pressed',String(viewMode==='3d'&&threeOffice?.getBoltFocus?.()));
+  $('boltFocusBtn').textContent=viewMode==='3d'&&threeOffice?.getBoltFocus?.()?'基地表示に戻す':'BOLTを拡大';
   $('view3dBtn').setAttribute('aria-pressed',String(viewMode === '3d'));
   $('view2dBtn').setAttribute('aria-pressed',String(viewMode === '2d'));
   $('view3dBtn').disabled=!threeOffice || !threeOffice.isAvailable();
@@ -171,6 +174,7 @@ function updateUI(s) {
 function render(force=false) {const s=sim.snapshot();
   const show3D=viewMode==='3d'&&Boolean(threeOffice)&&threeOffice.isAvailable();
   stage.classList.toggle('mode-3d',show3D);
+  stage.classList.toggle('bolt-focus',show3D&&Boolean(threeOffice?.getBoltFocus?.()));
   for(const pose of Object.values(s.poses))drawHero(pose,s.elapsed,s);
   if(show3D)threeOffice.draw(s,sim.reduced);
   $('missionProgress').style.width=`${s.missionProgress*100}%`;$('wallProgress').setAttribute('width',String(s.missionProgress*177));if(force||s.revision!==previousRevision){updateUI(s);previousRevision=s.revision;} }
@@ -197,6 +201,14 @@ function setCrewSkin(id, skin) {
   }
   render(true);
 }
+$('boltFocusBtn').addEventListener('click',()=>{
+  if(viewMode!=='3d'||!threeOffice)return;
+  const focus=threeOffice.setBoltFocus(!threeOffice.getBoltFocus());
+  $('threeStatus').textContent=focus
+    ?'BOLTの3Dモデルを拡大表示中。緩やかな左右回転でヘルメット・バイザー・スカーフを確認できます。'
+    :'3体の基地表示に戻しました。';
+  render(true);
+});
 for(const [model,element] of [['v2','bolt3dNewBtn'],['old','bolt3dOldBtn']]){
   $(element).addEventListener('click',()=>{
     if(viewMode!=='3d'||!threeOffice?.setBoltModel(model))return;
@@ -217,6 +229,7 @@ $('view3dBtn').addEventListener('click',()=>{
 });
 $('view2dBtn').addEventListener('click',()=>{
   viewMode='2d';
+  if(threeOffice)threeOffice.setBoltFocus(false);
   $('threeStatus').textContent='正式採用原画の2D関節アニメーション表示。';
   render(true);
 });
