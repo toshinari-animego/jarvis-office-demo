@@ -3,12 +3,15 @@ import { sprite } from './sprites.js';
 import { titanSprite } from './titan-rig.js';
 import { APPROVED_IMAGES } from './approved-image-data.js';
 import { createArticulatedRig, poseArticulatedRig } from './articulated-rig.js';
+import { createThreeOffice } from './three-office.js';
 const $ = id => document.getElementById(id);
 const stage = $('stage'), motion = matchMedia('(prefers-reduced-motion: reduce)');
 const sim = new Simulation({ reduced: motion.matches });
 const params = new URLSearchParams(location.search);
 // ?rig=static remains a visual fallback for SVG-mask compatibility checks.
 let useArticulatedRig = params.get('rig') !== 'static';
+let viewMode = params.get('view') === '2d' ? '2d' : '3d';
+let threeOffice = null;
 let titanSkin = params.get('titan') === 'old' ? 'old' : 'new';
 const crewSkins = { bolt: params.get('bolt') === 'old' ? 'old' : 'new', scout: params.get('scout') === 'old' ? 'old' : 'new' };
 function official(id) { return id === 'titan' ? titanSkin === 'new' : crewSkins[id] === 'new'; }
@@ -38,6 +41,17 @@ const nodes = Object.fromEntries(IDS.map(id => {
   return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),approved,rig:approved.rig,...parts}];
 }));
 let width = stage.clientWidth, charWidth = nodes.bolt.el.offsetWidth, last = 0, previousRevision = -1, logged = '', selectionHint = '';
+threeOffice = createThreeOffice(stage, message => {
+  viewMode = '2d';
+  stage.classList.remove('mode-3d');
+  $('threeStatus').textContent = message;
+});
+if (!threeOffice) {
+  viewMode = '2d';
+  $('threeStatus').textContent = 'この端末では3Dが使用できないため、従来の2Dで表示します。';
+}
+stage.classList.toggle('mode-3d', viewMode === '3d');
+
 function size() { width = stage.clientWidth; charWidth = nodes.bolt.el.offsetWidth; sim.setClearance((nodes.bolt.el.offsetWidth * 1.09 / width) * 1000); }
 new ResizeObserver(size).observe(stage); size();
 motion.addEventListener('change', () => { sim.reduced = motion.matches; });
@@ -71,10 +85,11 @@ function drawHero(pose, time, snapshot) {
   }
   const visible = pose.visible ? (mode==='appear' ? Math.max(.15,p) : 1) : 0;
   const approvedSkin = official(id);
-  n.hero.style.opacity = approvedSkin ? 0 : visible;
-  n.approved.style.opacity = approvedSkin && !useArticulatedRig ? visible : 0;
-  n.rig.element.style.opacity = approvedSkin && useArticulatedRig ? visible : 0;
-  if (approvedSkin && useArticulatedRig) {
+  const twoD = viewMode !== '3d';
+  n.hero.style.opacity = twoD && !approvedSkin ? visible : 0;
+  n.approved.style.opacity = twoD && approvedSkin && !useArticulatedRig ? visible : 0;
+  n.rig.element.style.opacity = twoD && approvedSkin && useArticulatedRig ? visible : 0;
+  if (twoD && approvedSkin && useArticulatedRig) {
     // Simulation time freezes while paused; all cloth and joints freeze with it.
     poseArticulatedRig(n.rig, pose, t, reduced);
   }
@@ -119,6 +134,10 @@ function drawHero(pose, time, snapshot) {
 }
 function smoothOut(p){return 1-Math.pow(1-p,3)}
 function updateUI(s) {
+  $('view3dBtn').setAttribute('aria-pressed',String(viewMode === '3d'));
+  $('view2dBtn').setAttribute('aria-pressed',String(viewMode === '2d'));
+  $('view3dBtn').disabled=!threeOffice || !threeOffice.isAvailable();
+  $('rigMotionBtn').disabled=viewMode === '3d';
   $('rigMotionBtn').setAttribute('aria-pressed',String(useArticulatedRig));
   $('rigMotionBtn').textContent=useArticulatedRig?'関節アニメ：ON':'関節アニメ：OFF';
   for (const id of ['bolt','scout']) {
@@ -144,7 +163,12 @@ function updateUI(s) {
   if(key!==logged){logged=key;$('log').replaceChildren();s.history.forEach((item,i)=>{const li=document.createElement('li'),icon=document.createElement('span'),body=document.createElement('div'),b=document.createElement('b'),small=document.createElement('small'),time=document.createElement('time');icon.className='log-icon';icon.textContent='↗';b.textContent=`${item.from.toUpperCase()} → ${item.to.toUpperCase()}`;small.textContent=item.title+' · 受領／作業開始';body.append(b,small);time.textContent=`#${String(s.count-i).padStart(2,'0')}`;li.append(icon,body,time);$('log').append(li);});}
   if(!s.history.length&&!$('log').children.length){const li=document.createElement('li');li.className='empty-log';li.textContent='まだ引き継ぎはありません。成果物を受け取り、作業を始めると記録されます。';$('log').append(li);}
 }
-function render(force=false) {const s=sim.snapshot(); for(const pose of Object.values(s.poses))drawHero(pose,s.elapsed,s);$('missionProgress').style.width=`${s.missionProgress*100}%`;$('wallProgress').setAttribute('width',String(s.missionProgress*177));if(force||s.revision!==previousRevision){updateUI(s);previousRevision=s.revision;} }
+function render(force=false) {const s=sim.snapshot();
+  const show3D=viewMode==='3d'&&Boolean(threeOffice)&&threeOffice.isAvailable();
+  stage.classList.toggle('mode-3d',show3D);
+  for(const pose of Object.values(s.poses))drawHero(pose,s.elapsed,s);
+  if(show3D)threeOffice.draw(s,sim.reduced);
+  $('missionProgress').style.width=`${s.missionProgress*100}%`;$('wallProgress').setAttribute('width',String(s.missionProgress*177));if(force||s.revision!==previousRevision){updateUI(s);previousRevision=s.revision;} }
 function action(fn){selectionHint='';last=0;fn();render(true);}
 function setTitanSkin(skin) {
   if (!['old','new'].includes(skin) || skin===titanSkin) return;
@@ -160,6 +184,17 @@ function setCrewSkin(id, skin) {
   crewSkins[id] = skin;
   render(true);
 }
+$('view3dBtn').addEventListener('click',()=>{
+  if(!threeOffice || !threeOffice.isAvailable())return;
+  viewMode='3d';
+  $('threeStatus').textContent='立体3D試作を表示中。3Dメッシュで腕・脚・マントを動かします。';
+  render(true);
+});
+$('view2dBtn').addEventListener('click',()=>{
+  viewMode='2d';
+  $('threeStatus').textContent='正式採用原画の2D関節アニメーション表示。';
+  render(true);
+});
 $('rigMotionBtn').addEventListener('click',()=>{useArticulatedRig=!useArticulatedRig;render(true);});
 for (const id of ['bolt','scout']) {
   $(id+'OldBtn').addEventListener('click',()=>setCrewSkin(id,'old'));
