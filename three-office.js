@@ -1,6 +1,7 @@
 // JARVIS OFFICE WebGL 3D review mode (no downloads or paid APIs).
 // Procedural 3D reinterpretation of approved concept art, not a scanned 3D asset.
 import { rigAngles } from './articulated-rig.js';
+import { BOLT_V2_MESHES, drawBoltV2 } from './bolt-v2.js';
 const VS=[
 'attribute vec3 p;attribute vec3 n;',
 'uniform mat4 model;uniform mat4 proj;',
@@ -80,6 +81,7 @@ export function createThreeOffice(stage,onFailure=()=>{}){
   const aP=gl.getAttribLocation(program,'p'),aN=gl.getAttribLocation(program,'n');
   const uM=gl.getUniformLocation(program,'model'),uP=gl.getUniformLocation(program,'proj'),uB=gl.getUniformLocation(program,'base'),uG=gl.getUniformLocation(program,'glow'),uS=gl.getUniformLocation(program,'stone');
   const mesh={sphere:upload(gl,sphereGeom()),tube:upload(gl,tubeGeom())};
+  for (const [name, geometry] of Object.entries(BOLT_V2_MESHES)) mesh['boltV2-'+name]=upload(gl,geometry);
   const render=(kind,m,color,glow=0,rock=0)=>{
    const g=mesh[kind];gl.bindBuffer(gl.ARRAY_BUFFER,g.v);gl.enableVertexAttribArray(aP);gl.vertexAttribPointer(aP,3,gl.FLOAT,false,0,0);
    gl.bindBuffer(gl.ARRAY_BUFFER,g.n);gl.enableVertexAttribArray(aN);gl.vertexAttribPointer(aN,3,gl.FLOAT,false,0,0);
@@ -111,7 +113,7 @@ export function createThreeOffice(stage,onFailure=()=>{}){
     ball(l,0,-.53,.23,huge?.36:.24,huge?.20:.16,huge?.38:.29,boot,0,huge?.5:0);
    }
   };
-  function bolt(root,p){
+  function boltOld(root,p){
    makeLimbs(root,'bolt',p);
    ball(root,0,1.32,0,.50,.59,.39,palette.bolt);
    ball(root,0,1.36,.36,.32,.41,.10,palette.blue);
@@ -199,12 +201,20 @@ export function createThreeOffice(stage,onFailure=()=>{}){
    return worldWidth;
   }
   let lastPaint=-Infinity, lastWidth=0, lastHeight=0;
+  let boltModel='v2';
+  const boltContext={render,ball,line,T,Z,Y,S};
   const onLost=e=>{e.preventDefault();unavailable=true;onFailure('3D描画が失われました。2Dに切り替えます。');};
   const onRestored=()=>{unavailable=true;onFailure('3D復帰はページ再読み込み後に試してください。');};
   canvas.addEventListener('webglcontextlost',onLost,false);
   canvas.addEventListener('webglcontextrestored',onRestored,false);
   stage.append(canvas);
-  return {canvas,isAvailable:()=>!unavailable,draw(snapshot,reduced=false){
+  return {canvas,isAvailable:()=>!unavailable,
+  getBoltModel:()=>boltModel,
+  setBoltModel(value){
+    if(value!=='v2'&&value!=='old')return false;
+    boltModel=value;lastPaint=-Infinity;return true;
+  },
+  draw(snapshot,reduced=false){
    if(unavailable||dead||!snapshot)return;
    try{
     const currentWidth=stage.clientWidth,currentHeight=stage.clientHeight;
@@ -222,7 +232,10 @@ export function createThreeOffice(stage,onFailure=()=>{}){
      let root=T(I(),(pose.x/1000-.5)*ww,(.5-pose.y/700)*14+d.lift,0);
      root=Y(root,d.heading);
      root=Z(root,-d.lean);
-     if(id==='bolt')bolt(root,d);else if(id==='titan')titan(root,d);else scout(root,d);
+     if(id==='bolt'){
+       if(boltModel==='v2')drawBoltV2(boltContext,root,d);
+       else boltOld(root,d);
+     }else if(id==='titan')titan(root,d);else scout(root,d);
     }
    }catch(e){unavailable=true;onFailure('3D描画エラーのため2Dに戻しました。');}
   },dispose(){dead=true;canvas.remove();}};
