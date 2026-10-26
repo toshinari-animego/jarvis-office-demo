@@ -1,16 +1,35 @@
 import { Simulation, IDS } from './simulation.js';
 import { sprite } from './sprites.js';
 import { titanSprite } from './titan-rig.js';
+import { APPROVED_IMAGES } from './approved-image-data.js';
 const $ = id => document.getElementById(id);
 const stage = $('stage'), motion = matchMedia('(prefers-reduced-motion: reduce)');
 const sim = new Simulation({ reduced: motion.matches });
-let titanSkin = new URLSearchParams(location.search).get('titan') === 'old' ? 'old' : 'new';
+const params = new URLSearchParams(location.search);
+let titanSkin = params.get('titan') === 'old' ? 'old' : 'new';
+const crewSkins = { bolt: params.get('bolt') === 'old' ? 'old' : 'new', scout: params.get('scout') === 'old' ? 'old' : 'new' };
+function official(id) { return id === 'titan' ? titanSkin === 'new' : crewSkins[id] === 'new'; }
+function attachApprovedArt(actor, id) {
+  const art = document.createElement('img');
+  art.className = 'approved-art';
+  art.alt = '';
+  art.setAttribute('aria-hidden', 'true');
+  art.decoding = 'async';
+  art.src = APPROVED_IMAGES[id];
+  art.addEventListener('error', () => {
+    if (id === 'titan') titanSkin = 'old'; else crewSkins[id] = 'old';
+    if (nodes?.[id]) render(true);
+  });
+  actor.appendChild(art);
+  return art;
+}
 const nodes = Object.fromEntries(IDS.map(id => {
   const el = $('a-'+id); el.querySelector('.actor').innerHTML = id === 'titan' && titanSkin === 'new' ? titanSprite() : sprite(id);
   if(id==='titan')el.dataset.skin=titanSkin;
+  const approved = attachApprovedArt(el.querySelector('.actor'), id);
   if (id !== 'scout') el.querySelector('.artifact').innerHTML = $('a-scout').querySelector('.artifact').innerHTML;
   const parts = Object.fromEntries(['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'].map(name => [name, el.querySelector('.'+name)]));
-  return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),...parts}];
+  return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),approved,...parts}];
 }));
 let width = stage.clientWidth, charWidth = nodes.bolt.el.offsetWidth, last = 0, previousRevision = -1, logged = '', selectionHint = '';
 function size() { width = stage.clientWidth; charWidth = nodes.bolt.el.offsetWidth; sim.setClearance((nodes.bolt.el.offsetWidth * 1.09 / width) * 1000); }
@@ -45,7 +64,8 @@ function drawHero(pose, time, snapshot) {
     if(mode==='walk' && pose.file)arms=50;
   }
   const visible = pose.visible ? (mode==='appear' ? Math.max(.15,p) : 1) : 0;
-  n.hero.style.opacity = visible;
+  n.hero.style.opacity = official(id) ? 0 : visible;
+  n.approved.style.opacity = official(id) ? visible : 0;
   n.file.hidden = !pose.file || !pose.visible;
   // The deliverable stays attached to a hand; only ownership changes at contact.
   const defaultLeft = id === 'titan' ? .4 : pose.direction < 0 ? .15 : .63;
@@ -87,9 +107,13 @@ function drawHero(pose, time, snapshot) {
 }
 function smoothOut(p){return 1-Math.pow(1-p,3)}
 function updateUI(s) {
+  for (const id of ['bolt','scout']) {
+    $(id+'OldBtn').setAttribute('aria-pressed', String(crewSkins[id] === 'old'));
+    $(id+'NewBtn').setAttribute('aria-pressed', String(crewSkins[id] === 'new'));
+  }
   $('titanOldBtn').setAttribute('aria-pressed',String(titanSkin==='old'));
   $('titanNewBtn').setAttribute('aria-pressed',String(titanSkin==='new'));
-  $('titanVersion').textContent=titanSkin==='new'?'新TITAN · 生物型／原画6パーツ':'旧TITAN · ロボット型／SVG';
+  $('titanVersion').textContent=titanSkin==='new'?'正式採用TITAN · 岩肌／傷／スキンヘッド':'旧TITAN · ロボット型／SVG';
   for(const id of IDS) { nodes[id].speech.textContent=s.poses[id].speech; nodes[id].status.textContent=s.paused?'一時停止 · '+s.poses[id].status:s.poses[id].status; nodes[id].dot.classList.toggle('active',s.poses[id].status!=='待機'&&!s.paused); }
   $('playState').textContent=s.paused?'PAUSED':s.auto?'AUTO PLAY':s.busy?'MANUAL HANDOFF':'STANDBY';
   $('counter').textContent=s.count; $('missionNumber').textContent=String(s.count+1).padStart(2,'0');
@@ -112,8 +136,18 @@ function setTitanSkin(skin) {
   if (!['old','new'].includes(skin) || skin===titanSkin) return;
   titanSkin=skin; const n=nodes.titan;
   n.actor.innerHTML=skin==='new'?titanSprite():sprite('titan');n.el.dataset.skin=skin;
+  n.approved = attachApprovedArt(n.actor, 'titan');
   for(const part of ['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'])n[part]=n.el.querySelector('.'+part);
   render(true); // Display-only: do not reset the simulation clock, owner or timeline.
+}
+function setCrewSkin(id, skin) {
+  if (!['bolt','scout'].includes(id) || !['old','new'].includes(skin) || crewSkins[id] === skin) return;
+  crewSkins[id] = skin;
+  render(true);
+}
+for (const id of ['bolt','scout']) {
+  $(id+'OldBtn').addEventListener('click',()=>setCrewSkin(id,'old'));
+  $(id+'NewBtn').addEventListener('click',()=>setCrewSkin(id,'new'));
 }
 $('titanOldBtn').addEventListener('click',()=>setTitanSkin('old'));
 $('titanNewBtn').addEventListener('click',()=>setTitanSkin('new'));
