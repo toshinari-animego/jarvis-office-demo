@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - feature/office-v0.4
+  pull_request:
+    branches:
+      - main
 permissions:
   contents: read
 jobs:
@@ -17,6 +20,8 @@ jobs:
       - name: Syntax and regression checks
         run: |
           node --check app.js
+          node --check bolt-v2.js
+          node --check three-office.js
           node --check articulated-rig.js
           node --check simulation.js
           npm test
