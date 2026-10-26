@@ -53,7 +53,7 @@ test('a simple SVG DOM stub receives masked, individually posed local image laye
       assert.equal(rig.element.attrs.class,'approved-rig');
       assert.equal(Object.keys(rig.elements).length,id==='titan'?4:6);
       const imgs=nodes.filter(n=>n.tag==='image');
-      assert.equal(imgs.length,id==='titan'?5:7);
+      assert.equal(imgs.length,id==='titan'?6:7);
       assert.ok(imgs.every(n=>n.attrs.href===source));
       const before=rig.elements['arm-l'].group.attrs.transform;
       poseArticulatedRig(rig,{mode:'receive',progress:.5,direction:1,file:false},4.5,false);
