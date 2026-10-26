@@ -8,7 +8,7 @@ const stage = $('stage'), motion = matchMedia('(prefers-reduced-motion: reduce)'
 const sim = new Simulation({ reduced: motion.matches });
 const params = new URLSearchParams(location.search);
 // ?rig=static remains a visual fallback for SVG-mask compatibility checks.
-const useArticulatedRig = params.get('rig') !== 'static';
+let useArticulatedRig = params.get('rig') !== 'static';
 let titanSkin = params.get('titan') === 'old' ? 'old' : 'new';
 const crewSkins = { bolt: params.get('bolt') === 'old' ? 'old' : 'new', scout: params.get('scout') === 'old' ? 'old' : 'new' };
 function official(id) { return id === 'titan' ? titanSkin === 'new' : crewSkins[id] === 'new'; }
@@ -119,6 +119,8 @@ function drawHero(pose, time, snapshot) {
 }
 function smoothOut(p){return 1-Math.pow(1-p,3)}
 function updateUI(s) {
+  $('rigMotionBtn').setAttribute('aria-pressed',String(useArticulatedRig));
+  $('rigMotionBtn').textContent=useArticulatedRig?'関節アニメ：ON':'関節アニメ：OFF';
   for (const id of ['bolt','scout']) {
     $(id+'OldBtn').setAttribute('aria-pressed', String(crewSkins[id] === 'old'));
     $(id+'NewBtn').setAttribute('aria-pressed', String(crewSkins[id] === 'new'));
@@ -158,6 +160,7 @@ function setCrewSkin(id, skin) {
   crewSkins[id] = skin;
   render(true);
 }
+$('rigMotionBtn').addEventListener('click',()=>{useArticulatedRig=!useArticulatedRig;render(true);});
 for (const id of ['bolt','scout']) {
   $(id+'OldBtn').addEventListener('click',()=>setCrewSkin(id,'old'));
   $(id+'NewBtn').addEventListener('click',()=>setCrewSkin(id,'new'));
