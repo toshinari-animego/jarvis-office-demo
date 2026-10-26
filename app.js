@@ -173,6 +173,10 @@ function action(fn){selectionHint='';last=0;fn();render(true);}
 function setTitanSkin(skin) {
   if (!['old','new'].includes(skin) || skin===titanSkin) return;
   titanSkin=skin; const n=nodes.titan;
+  if(skin==='old'&&viewMode==='3d'){
+    viewMode='2d';
+    $('threeStatus').textContent='旧TITANの比較表示は、旧原画を保持する2Dモードへ切り替えました。';
+  }
   n.actor.innerHTML=skin==='new'?titanSprite():sprite('titan');n.el.dataset.skin=skin;
   n.approved = attachApprovedArt(n.actor, 'titan');
   n.rig = n.approved.rig;
@@ -182,12 +186,19 @@ function setTitanSkin(skin) {
 function setCrewSkin(id, skin) {
   if (!['bolt','scout'].includes(id) || !['old','new'].includes(skin) || crewSkins[id] === skin) return;
   crewSkins[id] = skin;
+  if(skin==='old'&&viewMode==='3d'){
+    viewMode='2d';
+    $('threeStatus').textContent='旧デザインの比較表示は2Dモードへ切り替えました。';
+  }
   render(true);
 }
 $('view3dBtn').addEventListener('click',()=>{
   if(!threeOffice || !threeOffice.isAvailable())return;
+  // The procedural 3D models correspond to approved designs, not legacy 2D SVGs.
+  crewSkins.bolt='new';crewSkins.scout='new';
+  if(titanSkin==='old')setTitanSkin('new');
   viewMode='3d';
-  $('threeStatus').textContent='立体3D試作を表示中。3Dメッシュで腕・脚・マントを動かします。';
+  $('threeStatus').textContent='立体3D試作を表示中。正式採用3体を立体解釈したモデルです。';
   render(true);
 });
 $('view2dBtn').addEventListener('click',()=>{
