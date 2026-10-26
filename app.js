@@ -2,10 +2,13 @@ import { Simulation, IDS } from './simulation.js';
 import { sprite } from './sprites.js';
 import { titanSprite } from './titan-rig.js';
 import { APPROVED_IMAGES } from './approved-image-data.js';
+import { createArticulatedRig, poseArticulatedRig } from './articulated-rig.js';
 const $ = id => document.getElementById(id);
 const stage = $('stage'), motion = matchMedia('(prefers-reduced-motion: reduce)');
 const sim = new Simulation({ reduced: motion.matches });
 const params = new URLSearchParams(location.search);
+// ?rig=static remains a visual fallback for SVG-mask compatibility checks.
+const useArticulatedRig = params.get('rig') !== 'static';
 let titanSkin = params.get('titan') === 'old' ? 'old' : 'new';
 const crewSkins = { bolt: params.get('bolt') === 'old' ? 'old' : 'new', scout: params.get('scout') === 'old' ? 'old' : 'new' };
 function official(id) { return id === 'titan' ? titanSkin === 'new' : crewSkins[id] === 'new'; }
@@ -21,6 +24,9 @@ function attachApprovedArt(actor, id) {
     if (nodes?.[id]) render(true);
   });
   actor.appendChild(art);
+  const rig = createArticulatedRig(id, APPROVED_IMAGES[id]);
+  actor.appendChild(rig.element);
+  art.rig = rig;
   return art;
 }
 const nodes = Object.fromEntries(IDS.map(id => {
@@ -29,7 +35,7 @@ const nodes = Object.fromEntries(IDS.map(id => {
   const approved = attachApprovedArt(el.querySelector('.actor'), id);
   if (id !== 'scout') el.querySelector('.artifact').innerHTML = $('a-scout').querySelector('.artifact').innerHTML;
   const parts = Object.fromEntries(['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'].map(name => [name, el.querySelector('.'+name)]));
-  return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),approved,...parts}];
+  return [id,{el, actor:el.querySelector('.actor'), bubble:el.querySelector('.speech'), speech:el.querySelector('.speech span'), file:el.querySelector('.artifact'), shadow:el.querySelector('.shadow'), status:$('status-'+id), dot:$('dot-'+id),approved,rig:approved.rig,...parts}];
 }));
 let width = stage.clientWidth, charWidth = nodes.bolt.el.offsetWidth, last = 0, previousRevision = -1, logged = '', selectionHint = '';
 function size() { width = stage.clientWidth; charWidth = nodes.bolt.el.offsetWidth; sim.setClearance((nodes.bolt.el.offsetWidth * 1.09 / width) * 1000); }
@@ -64,8 +70,14 @@ function drawHero(pose, time, snapshot) {
     if(mode==='walk' && pose.file)arms=50;
   }
   const visible = pose.visible ? (mode==='appear' ? Math.max(.15,p) : 1) : 0;
-  n.hero.style.opacity = official(id) ? 0 : visible;
-  n.approved.style.opacity = official(id) ? visible : 0;
+  const approvedSkin = official(id);
+  n.hero.style.opacity = approvedSkin ? 0 : visible;
+  n.approved.style.opacity = approvedSkin && !useArticulatedRig ? visible : 0;
+  n.rig.element.style.opacity = approvedSkin && useArticulatedRig ? visible : 0;
+  if (approvedSkin && useArticulatedRig) {
+    // Simulation time freezes while paused; all cloth and joints freeze with it.
+    poseArticulatedRig(n.rig, pose, t, reduced);
+  }
   n.file.hidden = !pose.file || !pose.visible;
   // The deliverable stays attached to a hand; only ownership changes at contact.
   const defaultLeft = id === 'titan' ? .4 : pose.direction < 0 ? .15 : .63;
@@ -137,6 +149,7 @@ function setTitanSkin(skin) {
   titanSkin=skin; const n=nodes.titan;
   n.actor.innerHTML=skin==='new'?titanSprite():sprite('titan');n.el.dataset.skin=skin;
   n.approved = attachApprovedArt(n.actor, 'titan');
+  n.rig = n.approved.rig;
   for(const part of ['hero','head','torso','arm-l','arm-r','leg-l','leg-r','eyes','pupils','mouth','scan','energy'])n[part]=n.el.querySelector('.'+part);
   render(true); // Display-only: do not reset the simulation clock, owner or timeline.
 }
