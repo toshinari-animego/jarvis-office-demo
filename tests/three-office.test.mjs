@@ -66,6 +66,13 @@ test('actual indexed 3D mesh draw calls and all 6 business handoff routes work',
   }
   assert.ok(ctx.stats().drawCalls>100);
   assert.ok(ctx.stats().matrixCalls>100);
+  const afterSix=ctx.stats().drawCalls;
+  // Rewinding to zero after a long run must repaint; otherwise the old 3D frame persists.
+  sim.reset();renderer.draw(sim.snapshot());
+  assert.ok(ctx.stats().drawCalls>afterSix);
+  const afterReset=ctx.stats().drawCalls;
+  renderer.draw(sim.snapshot());
+  assert.equal(ctx.stats().drawCalls,afterReset,'unchanged time is throttled');
   assert.ok(canvas.width<=1450&&canvas.height<=1100);
   let prevented=false;callbacks.webglcontextlost({preventDefault(){prevented=true}});
   assert.ok(prevented);assert.equal(renderer.isAvailable(),false);
