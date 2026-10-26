@@ -34,3 +34,7 @@
 .agent.bolt .actor .approved-rig{left:-16%;bottom:-1%;width:132%;height:144%}
 .approved-rig [data-part]{transform-box:view-box;pointer-events:none}
 @media(prefers-reduced-motion:reduce){.approved-rig [data-part]{transition:none!important;animation:none!important}}
+
+.rig-switch{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:10px 12px;background:#0d2030;border:1px solid #3d5266;border-radius:8px}
+.rig-switch span{font-size:11px;color:#b7d6e5}
+.rig-switch .button{min-height:44px;min-width:143px;font-size:11px}
