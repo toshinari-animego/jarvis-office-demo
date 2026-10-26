@@ -1,0 +1,22 @@
+name: JARVIS OFFICE v0.4 safety and motion tests
+on:
+  push:
+    branches:
+      - feature/office-v0.4
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and regression checks
+        run: |
+          node --check app.js
+          node --check articulated-rig.js
+          node --check simulation.js
+          npm test
