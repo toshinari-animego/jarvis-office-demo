@@ -48,8 +48,24 @@ test('auto can stop after current transaction; paused idle auto does not progres
 });
 test('reduced motion keeps all six functional transactions',()=>{for(const [from,to]of EDGES){const sim=new Simulation({reduced:true});sim.request(from,to);assert.ok(sim.current.phases.every(p=>p.duration<=400));finish(sim);assert.equal(sim.count,1);}});
 test('production client has no external API, analytics, secret or dynamic code calls',()=>{
- const files=['index.html','styles.css','app.js','simulation.js','sprites.js','titan-rig.js'];
+ const files=['index.html','styles.css','app.js','simulation.js','sprites.js','titan-rig.js','approved-image-data.js'];
  for(const name of files){const source=fs.readFileSync(name,'utf8');assert.doesNotMatch(source,/\b(fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|eval)\s*\(/,name);assert.doesNotMatch(source,/\b(?:sk-proj-|sk_live_|sk_test_|ghp_|github_pat_)[A-Za-z0-9_]{12,}/,name);assert.doesNotMatch(source,/https?:\/\/(?!www\.w3\.org)/,name);}
  assert.match(fs.readFileSync('index.html','utf8'),/connect-src 'none'/);
 });
 test('orientation/viewport changes preserve spacing during a transaction',()=>{const sim=new Simulation();sim.request('bolt','titan');advanceTo(sim,'appear',.2);sim.setClearance(180);let s=sim.snapshot();assert.equal(Math.abs(s.poses.bolt.x-s.poses.titan.x),180);sim.setClearance(95);s=sim.snapshot();assert.equal(Math.abs(s.poses.bolt.x-s.poses.titan.x),95);finish(sim);assert.equal(sim.count,1);});
+
+
+test('review includes three approved local character images and reversible controls', () => {
+ const assets = fs.readFileSync('approved-image-data.js','utf8');
+ const page = fs.readFileSync('index.html','utf8');
+ const app = fs.readFileSync('app.js','utf8');
+ for (const name of ['bolt','titan','scout']) {
+  assert.ok(assets.includes('"'+name+'": "data:image/webp;base64,'), name+' embed missing');
+  assert.ok(page.includes('id="'+(name==='titan'?'titan':name)+'OldBtn"'), name+' old switch missing');
+  assert.ok(page.includes('id="'+(name==='titan'?'titan':name)+'NewBtn"'), name+' new switch missing');
+ }
+ assert.match(app,/function setCrewSkin\(/);
+ assert.match(app,/function setTitanSkin\(/);
+ assert.match(app,/n\.approved\.style\.opacity/);
+ assert.match(page,/DEMO \/ SIMULATION/);
+});
