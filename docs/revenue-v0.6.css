@@ -40,3 +40,12 @@
 }
 @media(max-width:370px){.handoff-caption span{display:none}.roomtitle span{max-width:115px}.agent-role{letter-spacing:0}}
 @media(prefers-reduced-motion:reduce){.handoff-marker{transition:none}}
+
+
+/* v0.6 route fidelity: derive active path from actual role station geometry. */
+.beam{inset:0;z-index:0;opacity:.88}
+.beam path.beam-grid{stroke:#376378;stroke-width:1.6;stroke-dasharray:5 12;opacity:.35;filter:none}
+.beam path#beam-main.active{stroke:#8feafa;stroke-width:5;stroke-dasharray:9 7;filter:drop-shadow(0 0 8px #6bddf0b0)}
+.beam path#beam-main.active.held{stroke:#efa28f;stroke-dasharray:6 10;filter:drop-shadow(0 0 7px #ec8c72aa)}
+.beam path#beam-main:not(.active){stroke:transparent}
+@media(max-width:590px){.beam{inset:0}.handoff-caption{max-width:calc(100% - 22px)}}
