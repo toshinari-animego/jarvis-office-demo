@@ -115,7 +115,7 @@ function render(){
   $('status').textContent=held&&!state.includes('HELD')?state+' · HELD継続':state;
   $('taskDescription').textContent=description;
   $('attempt').textContent=count;
-  $('next').textContent=next;
+  $('nextRole').textContent=next;
   $('evidence').textContent=note;
   $('statusDot').classList.toggle('held',held);
   $('evidence').classList.toggle('warn',held);
