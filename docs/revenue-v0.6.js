@@ -61,24 +61,41 @@ function isDesignHeld(){
     || (scenario==='repair' && step<4)
     || (scenario==='third' && step<9);
 }
-function moveIllustrativePacket(role, held){
+function updateDiagram(role, held){
   const stage=document.querySelector('.stage');
   const marker=$('handoffMarker');
-  if(!stage||!marker)return;
-  const bounds=stage.getBoundingClientRect();
-  const station=role==='owner'?null:$('agent-'+role);
-  let x=bounds.width/2;
-  let y=bounds.height-37;
-  if(station){
-    const p=station.getBoundingClientRect();
-    x=p.left-bounds.left+p.width*.82;
-    y=p.top-bounds.top+Math.min(61,p.height*.4);
+  const route=$('beam-main');
+  if(!stage||!marker||!route)return;
+  const box=stage.getBoundingClientRect();
+  if(!(box.width>0&&box.height>0))return;
+
+  // Position is taken from the rendered role stations; this is a visual link only.
+  function anchor(id){
+    if(id==='owner')return {x:box.width*.5,y:box.height-38};
+    const el=$('agent-'+id);
+    if(!el)return {x:box.width*.5,y:box.height*.5};
+    const rect=el.getBoundingClientRect();
+    return {
+      x:rect.left-box.left+rect.width*.5,
+      y:rect.top-box.top+Math.min(rect.height*.42,88)
+    };
   }
-  marker.style.left=Math.round(x)+'px';
-  marker.style.top=Math.round(y)+'px';
+  const to=anchor(role);
+  marker.style.left=Math.round(to.x)+'px';
+  marker.style.top=Math.round(to.y)+'px';
   marker.classList.toggle('held',held);
   marker.classList.toggle('safe',scenario==='safety');
+
+  const fromId=step?episodes[scenario][step-1][0]:role;
+  const from=anchor(fromId);
+  const vx=x=>Math.round(x/box.width*1000);
+  const vy=y=>Math.round(y/box.height*700);
+  route.setAttribute('d',step?
+    'M'+vx(from.x)+' '+vy(from.y)+'L'+vx(to.x)+' '+vy(to.y):'');
+  route.classList.toggle('active',step>0);
+  route.classList.toggle('held',held);
 }
+
 function render(){
   const allSteps=episodes[scenario], [role,title,state,description,count,next,note]=allSteps[step];
   const held=isDesignHeld();
@@ -117,24 +134,31 @@ function render(){
       :['atlas','pulse'].includes(id)?'仮表示':'待機';
   }
   const list=$('steps');
-  list.replaceChildren();
-  for(let i=0;i<allSteps.length;i++){
-    const s=allSteps[i];
-    const b=document.createElement('button');
-    b.type='button';
-    b.dataset.step=String(i);
+  // Reuse the timeline buttons between steps so keyboard focus is not lost.
+  if(list.dataset.scenario!==scenario||list.children.length!==allSteps.length){
+    list.replaceChildren();
+    for(let i=0;i<allSteps.length;i++){
+      const s=allSteps[i];
+      const b=document.createElement('button');
+      b.type='button';
+      b.dataset.step=String(i);
+      b.textContent=(i+1)+' · '+names[s[0]];
+      b.setAttribute('aria-label',String(i+1)+'番目を表示: '+names[s[0]]+'、'+s[1]);
+      list.appendChild(b);
+    }
+    list.dataset.scenario=scenario;
+  }
+  for(let i=0;i<list.children.length;i++){
+    const b=list.children[i];
     b.className='step'+(i<step?' done':'')+(i===step?' now':'')+(i===step&&held?' hold':'');
-    b.textContent=(i+1)+' · '+names[s[0]];
-    b.setAttribute('aria-label',String(i+1)+'番目を表示: '+names[s[0]]+'、'+s[1]);
     if(i===step)b.setAttribute('aria-current','step');
-    list.appendChild(b);
+    else b.removeAttribute('aria-current');
   }
   const previousRole=step>0?allSteps[step-1][0]:role;
   $('transferRoute').textContent=step===0
     ?names[role]+' → '+next
     :names[previousRole]+' → '+names[role];
-  $('beam-main').classList.toggle('active',role!=='owner'&&!held);
-  moveIllustrativePacket(role,held);
+  updateDiagram(role,held);
 }
 $('scenario').addEventListener('change',event=>{
   if(episodes[event.target.value]){scenario=event.target.value;step=0;render();}
@@ -151,5 +175,5 @@ $('steps').addEventListener('click',event=>{
     render();
   }
 });
-window.addEventListener('resize',()=>moveIllustrativePacket(episodes[scenario][step][0],isDesignHeld()),{passive:true});
+window.addEventListener('resize',()=>updateDiagram(episodes[scenario][step][0],isDesignHeld()),{passive:true});
 render();
