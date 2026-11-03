@@ -43,7 +43,7 @@
 <aside class="console" aria-label="現在の模擬処理">
   <div class="console-header"><h3>MISSION INSPECTOR</h3><p>表示したシナリオの期待挙動です。実際のAI処理結果ではありません。</p></div>
   <div class="console-main" aria-live="polite" aria-atomic="true">
-    <div class="progress-row"><span id="stepNum">STEP 01 / 01</span><span id="roleName">BOLT</span></div><div class="meter"><span id="progress"></span></div>
+    <div class="progress-row"><span id="stepNum">STEP 01 / 01</span><span id="roleName">BOLT</span></div><div class="meter" role="progressbar" id="storyProgress" aria-label="表示シナリオの進行位置" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress"></span></div>
     <div class="status-line"><i id="statusDot" class="status-dot"></i><strong id="status">DESIGN_ONLY</strong></div>
     <h4 id="taskTitle">シナリオを選択</h4>
     <p class="description" id="taskDescription">各専門AIの仕事の流れを順に確認できます。</p>
@@ -54,7 +54,7 @@
       <div class="fact"><small>Revenue稼働</small><strong>NO-GO</strong></div>
     </div>
     <div class="note" id="evidence">記録・未確認事項を次へ引き継ぎます。</div>
-    <p class="hold-notice" id="holdNotice">HELD中は修正の設計を進めても、実行停止は維持されます。</p>
+    <p class="hold-notice" id="holdNotice">HELD中は修正の設計を進めても、実行停止は維持されます。</p><p class="scenario-notice">操作はシナリオの表示位置を切り替えるだけです。実AIの作業・テスト・Owner承認は発生しません。</p>
   </div>
   <div class="toolbar">
     <button class="btn secondary" type="button" id="prev">← 前へ</button>
@@ -68,7 +68,7 @@
   <div class="chip"><span>3回目 / 例外枠</span><strong>根拠＋独立レビュー＋承認</strong><em>自動的に許可されない</em></div>
   <div class="chip"><span>実処理の再試行</span><strong>0回</strong><em>送信・課金・Provider・Revenue再開は禁止</em></div>
 </div>
-<section class="timeline" aria-label="選択したシナリオの各段階"><div class="timeline-heading"><h3>HANDOFF / RECOVERY TIMELINE</h3><span>各工程を押すと表示位置を移動（実行なし）</span></div><div class="steps" id="steps"></div></section>
+<section class="timeline" aria-label="選択したシナリオの各段階"><div class="timeline-heading"><h3>HANDOFF / RECOVERY TIMELINE</h3><span>表示位置をタップで切替 · AIは起動しません</span></div><div class="steps" id="steps"></div></section>
 </main>
 <footer class="foot"><span><strong>ISOLATED FRONTEND PREVIEW</strong> — オリジナル採用画像3体を既存ブランチから参照。ATLAS/PULSEは正式キャラクター未採用の仮表示。</span><span>実API・通信・ストレージ・Worker接続なし。C19未認定・F01–F22 0/22・Revenue NO-GO。<a href="../index.html">v0.4 OFFICEへ戻る</a></span></footer>
 </div>
