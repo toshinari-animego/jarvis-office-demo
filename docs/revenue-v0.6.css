@@ -49,3 +49,27 @@
 .beam path#beam-main.active.held{stroke:#efa28f;stroke-dasharray:6 10;filter:drop-shadow(0 0 7px #ec8c72aa)}
 .beam path#beam-main:not(.active){stroke:transparent}
 @media(max-width:590px){.beam{inset:0}.handoff-caption{max-width:calc(100% - 22px)}}
+
+
+/* v0.6.2: mobile-readable, accessible storyboard-only affordances. */
+.scenario-notice{margin:11px 0 0;color:#9fb6c6;font-size:10px;line-height:1.7}
+.roomtitle strong,.roomtitle span{min-width:0;overflow-wrap:anywhere}
+.meter[role="progressbar"]{position:relative}
+@media(max-width:590px){
+ .summary h2{line-height:1.3}
+ .roomtitle{align-items:flex-start}
+ .roomtitle strong{font-size:9px;letter-spacing:1px;flex:1}
+ .roomtitle span{flex:0 1 44%;max-width:44%;font-size:8px}
+ .selector{align-items:stretch}
+ .selector label{flex:0 0 100%}
+ .selector select{min-width:0;width:100%;font-size:14px;min-height:44px}
+ .timeline{padding:14px 12px}
+ .steps{scroll-padding-inline:6px;overscroll-behavior-inline:contain;-webkit-overflow-scrolling:touch}
+}
+@media(max-width:370px){
+ .roomtitle span{font-size:7px;letter-spacing:0}
+ .handoff-caption{max-width:calc(100% - 18px);font-size:8px}
+ .facts{gap:6px}
+ .fact{padding:8px}
+ .fact strong{font-size:11px}
+}
