@@ -57,9 +57,18 @@ let step=0;
 
 // These flags describe the story's DESIGN hold, never actual Revenue/Worker state.
 function isDesignHeld(){
-  return scenario==='safety'||scenario==='thirdDenied'
-    || (scenario==='repair' && step<4)
-    || (scenario==='third' && step<9);
+  // Derive HELD from the scenario's recorded states instead of hardcoding
+  // step indices. Manual timeline seeking still cannot grant permissions.
+  let held=false;
+  const seen=episodes[scenario];
+  if(!Array.isArray(seen)||!seen[step])return true;
+  for(let i=0;i<=step;i++){
+    const status=seen[i][2];
+    if(status.includes('HELD')||status.includes('THIRD_ATTEMPT_DENIED')
+       ||status.includes('ESCALATED_TO_OWNER'))held=true;
+    if(status==='DESIGN_RESUMED')held=false; // design-only recovery
+  }
+  return held;
 }
 function updateDiagram(role, held){
   const stage=document.querySelector('.stage');
@@ -122,9 +131,13 @@ function render(){
     :'この画面の「進行」は架空の設計工程のみ。実処理の許可は常にDENIED。';
   $('holdNotice').classList.toggle('held',held);
   $('progress').style.width=String(((step+1)/allSteps.length)*100)+'%';
+  $('progress').setAttribute('aria-label','シナリオ表示位置 '+(step+1)+' / '+allSteps.length);
   $('prev').disabled=step===0;
   $('next').disabled=final;
   $('next').textContent=final?'表示の終点':'次へ →';
+  $('next').setAttribute('aria-label',final
+    ?'このシナリオは表示の終点です'
+    :'次の表示工程へ進む（実際の作業・外部操作なし）');
   for(const id of ['bolt','scout','atlas','pulse','titan']){
     const el=$('agent-'+id),current=id===role;
     el.classList.toggle('current',current);
@@ -156,7 +169,7 @@ function render(){
   }
   const previousRole=step>0?allSteps[step-1][0]:role;
   $('transferRoute').textContent=step===0
-    ?names[role]+' → '+next
+    ?names[role]+' / 受付・検出中'
     :names[previousRole]+' → '+names[role];
   updateDiagram(role,held);
 }
