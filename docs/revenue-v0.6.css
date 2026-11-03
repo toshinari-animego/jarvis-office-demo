@@ -8,3 +8,35 @@
 @media(max-width:950px){.layout{grid-template-columns:1fr}.stage{min-height:480px}.room-grid{grid-template-rows:177px 165px;gap:50px 13px}.description{min-height:0}.console-main{padding:17px}.strip{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:590px){.wrapper{padding:15px 11px 32px}.brand h1{font-size:23px}.brand-icon{width:40px;height:40px;font-size:24px}.tag{font-size:9px}.summary{margin-top:19px}.stage{min-height:428px}.room-grid{padding:69px 10px 19px;grid-template-rows:150px 157px;gap:46px 7px}.avatar{height:83px;width:91px;margin-bottom:-5px}.avatar img{height:84px}.prototype{width:60px;height:69px;font-size:23px}.agent-name{font-size:10px}.agent-role{font-size:8px}.agent-state{font-size:8px;padding:2px 6px;margin:8px 0 11px}.station{height:87px}.roomtitle{top:16px;left:12px;right:12px}.roomtitle strong{font-size:9px}.roomtitle span{font-size:8px}.ticket{font-size:9px;max-width:190px;padding:7px}.ticket b{font-size:10px}.ticket span{font-size:8px}.beam{inset:85px 6% 70px}.strip{grid-template-columns:1fr}.chip{padding:12px 15px}.steps{gap:4px}.step{min-width:84px}.foot{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.agent.current .avatar{animation:none}.meter span{transition:none}}
+
+
+/* v0.6.1: display-only handoff marker, persistent HELD and touch timeline */
+.handoff-marker{position:absolute;z-index:4;left:50%;top:50%;width:29px;height:29px;display:grid;place-items:center;border-radius:9px;border:1px solid #c1f5ed;background:#174d5a;color:#d7fff3;font-size:17px;box-shadow:0 0 14px #78deee81,0 4px 12px #0009;transform:translate(-50%,-50%);pointer-events:none;transition:left .54s cubic-bezier(.2,.75,.18,1),top .54s cubic-bezier(.2,.75,.18,1),background-color .3s ease}
+.handoff-marker.held{background:#623933;color:#ffe3d8;border-color:#f3b5a3;box-shadow:0 0 15px #e58f716f,0 4px 12px #0009}
+.handoff-marker.safe{background:#613030}
+.handoff-caption{position:absolute;z-index:3;top:47px;left:50%;transform:translateX(-50%);display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;max-width:96%;padding:5px 11px;background:#091e31eb;border:1px solid #385e75;border-radius:100px;color:#a9c4d3;font-size:10px;letter-spacing:.2px}
+.handoff-caption strong{font-weight:900;color:#d5edf2}
+.handoff-caption span{color:#93b1bf;font-size:9px}
+.hold-notice{font-size:11px;color:#9ed1d9;margin:12px 0 0;padding:9px 10px;border:1px solid #375f71;border-radius:8px;background:#10283a;line-height:1.65}
+.hold-notice.held{background:#2a262b;color:#f5c6ba;border-color:#865d58}
+.timeline-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.timeline-heading h3{margin:0}
+.timeline-heading span{color:#9bb4c5;font-size:10px}
+.step{min-height:45px;font-family:inherit;line-height:1.35;cursor:pointer}
+.step:hover{border-color:#8dcfdf;color:#e9fcff}
+.step[aria-current=step]{box-shadow:0 0 0 1px #b3ecf1 inset}
+.step:focus-visible{outline:3px solid #96e0ea;outline-offset:1px}
+.btn{min-height:44px}
+@media(max-width:590px){
+ .handoff-caption{top:45px;font-size:9px;padding:4px 7px;gap:5px}
+ .handoff-caption span{font-size:8px}
+ .handoff-marker{width:23px;height:23px;border-radius:7px;font-size:13px}
+ .roomtitle span{max-width:145px;text-align:right;line-height:1.35}
+ .console-header{padding:14px 16px}
+ .console-main{padding:15px 16px}
+ .toolbar{padding:12px 15px 16px}
+ .btn{min-height:45px}
+ .step{min-width:84px}
+}
+@media(max-width:370px){.handoff-caption span{display:none}.roomtitle span{max-width:115px}.agent-role{letter-spacing:0}}
+@media(prefers-reduced-motion:reduce){.handoff-marker{transition:none}}
