@@ -55,6 +55,33 @@ const names={bolt:'BOLT',scout:'SCOUT',atlas:'ATLAS',pulse:'PULSE',titan:'TITAN'
 let scenario='normal';
 let step=0;
 
+// These animations illustrate a storyboard; no AI or live task is executed.
+const reducedMotionQuery=window.matchMedia('(prefers-reduced-motion: reduce)');
+let motionOn=!reducedMotionQuery.matches;
+const speechLines={
+  bolt:'次の担当へつなぐ！',
+  scout:'証拠と不明点を探す…',
+  titan:'差分と根拠を確認。',
+  atlas:'商品仮説を組み立てる。',
+  pulse:'数字と前提を照合。'
+};
+const heldSpeechLines={
+  bolt:'差戻しの整理。HELD継続。',
+  scout:'出典を再確認。HELD中。',
+  titan:'独立レビュー。停止維持。',
+  atlas:'仮説を見直し。HELD中。',
+  pulse:'計算を再点検。HELD中。'
+};
+function renderMotionMode(){
+  const effective=motionOn&&!reducedMotionQuery.matches;
+  document.querySelector('.stage').classList.toggle('motion-off',!effective);
+  const button=$('motionToggle');
+  button.disabled=reducedMotionQuery.matches;
+  button.setAttribute('aria-pressed',String(effective));
+  button.textContent=reducedMotionQuery.matches?'演出: OFF（端末設定）':effective?'演出: ON':'演出: OFF';
+}
+
+
 // These flags describe the story's DESIGN hold, never actual Revenue/Worker state.
 function isDesignHeld(){
   // Derive HELD from the scenario's recorded states instead of hardcoding
@@ -80,7 +107,11 @@ function updateDiagram(role, held){
 
   // Position is taken from the rendered role stations; this is a visual link only.
   function anchor(id){
-    if(id==='owner')return {x:box.width*.5,y:box.height-38};
+    if(id==='owner'){
+      const desk=$('ownerDesk').getBoundingClientRect();
+      return {x:desk.left-box.left+desk.width*.5,
+        y:desk.top-box.top-12};
+    }
     const el=$('agent-'+id);
     if(!el)return {x:box.width*.5,y:box.height*.5};
     const rect=el.getBoundingClientRect();
@@ -109,6 +140,7 @@ function render(){
   const allSteps=episodes[scenario], [role,title,state,description,count,next,note]=allSteps[step];
   const held=isDesignHeld();
   const final=step===allSteps.length-1;
+  const previousRole=step>0?allSteps[step-1][0]:role;
   $('stepNum').textContent='STEP '+String(step+1).padStart(2,'0')+' / '+String(allSteps.length).padStart(2,'0');
   $('roleName').textContent=names[role];
   $('taskTitle').textContent=title;
@@ -117,6 +149,8 @@ function render(){
   $('attempt').textContent=count;
   $('nextRole').textContent=next;
   $('evidence').textContent=note;
+  $('handoffMarker').textContent=held?'!':'▣';
+  $('ownerDesk').classList.toggle('active',role==='owner');
   $('statusDot').classList.toggle('held',held);
   $('evidence').classList.toggle('warn',held);
   $('ticket').classList.toggle('critical',held);
@@ -145,6 +179,10 @@ function render(){
     const el=$('agent-'+id),current=id===role;
     el.classList.toggle('current',current);
     el.classList.toggle('held',current&&held);
+    el.classList.toggle('giving',step>0 && id===previousRole && id!==role);
+    el.querySelector('.speech-bubble').textContent=current
+      ?held?heldSpeechLines[id]:speechLines[id]
+      :'';
     el.querySelector('.agent-state').textContent=current
       ?held?'HELD中':state.includes('REVIEW')?'確認中':'表示中'
       :['atlas','pulse'].includes(id)?'仮表示':'待機';
@@ -170,11 +208,11 @@ function render(){
     if(i===step)b.setAttribute('aria-current','step');
     else b.removeAttribute('aria-current');
   }
-  const previousRole=step>0?allSteps[step-1][0]:role;
   $('transferRoute').textContent=step===0
     ?names[role]+' / 受付・検出中'
     :names[previousRole]+' → '+names[role];
   updateDiagram(role,held);
+  renderMotionMode();
 }
 $('scenario').addEventListener('change',event=>{
   if(episodes[event.target.value]){scenario=event.target.value;step=0;render();}
@@ -191,5 +229,13 @@ $('steps').addEventListener('click',event=>{
     render();
   }
 });
+$('motionToggle').addEventListener('click',()=>{
+  if(reducedMotionQuery.matches)return;
+  motionOn=!motionOn;
+  renderMotionMode();
+});
+if(typeof reducedMotionQuery.addEventListener==='function'){
+  reducedMotionQuery.addEventListener('change',renderMotionMode);
+}
 window.addEventListener('resize',()=>updateDiagram(episodes[scenario][step][0],isDesignHeld()),{passive:true});
 render();
