@@ -37,6 +37,8 @@
     <article class="agent pulse" id="agent-pulse"><div class="avatar"><div class="prototype pulse" aria-label="PULSEの仮デザイン">▥</div></div><div class="station"></div><div class="agent-name">PULSE</div><div class="agent-role">費用・採算</div><div class="agent-state">仮表示</div></article>
   </div>
   <div class="ticket" id="ticket" aria-hidden="true"><b>REVENUE / DESIGN ONLY</b><span>外部送信・課金・自動再試行なし</span></div>
+  <div class="handoff-marker" id="handoffMarker" aria-hidden="true">▣</div>
+  <div class="handoff-caption" aria-hidden="true">DISPLAY ROUTE <strong id="transferRoute">BOLT → SCOUT</strong><span>演出のみ・実処理なし</span></div>
 </section>
 <aside class="console" aria-label="現在の模擬処理">
   <div class="console-header"><h3>MISSION INSPECTOR</h3><p>表示したシナリオの期待挙動です。実際のAI処理結果ではありません。</p></div>
@@ -52,6 +54,7 @@
       <div class="fact"><small>Revenue稼働</small><strong>NO-GO</strong></div>
     </div>
     <div class="note" id="evidence">記録・未確認事項を次へ引き継ぎます。</div>
+    <p class="hold-notice" id="holdNotice">HELD中は修正の設計を進めても、実行停止は維持されます。</p>
   </div>
   <div class="toolbar">
     <button class="btn secondary" type="button" id="prev">← 前へ</button>
@@ -65,7 +68,7 @@
   <div class="chip"><span>3回目 / 例外枠</span><strong>根拠＋独立レビュー＋承認</strong><em>自動的に許可されない</em></div>
   <div class="chip"><span>実処理の再試行</span><strong>0回</strong><em>送信・課金・Provider・Revenue再開は禁止</em></div>
 </div>
-<section class="timeline" aria-label="選択したシナリオの各段階"><h3>HANDOFF / RECOVERY TIMELINE</h3><div class="steps" id="steps"></div></section>
+<section class="timeline" aria-label="選択したシナリオの各段階"><div class="timeline-heading"><h3>HANDOFF / RECOVERY TIMELINE</h3><span>各工程を押すと表示位置を移動（実行なし）</span></div><div class="steps" id="steps"></div></section>
 </main>
 <footer class="foot"><span><strong>ISOLATED FRONTEND PREVIEW</strong> — オリジナル採用画像3体を既存ブランチから参照。ATLAS/PULSEは正式キャラクター未採用の仮表示。</span><span>実API・通信・ストレージ・Worker接続なし。C19未認定・F01–F22 0/22・Revenue NO-GO。<a href="../index.html">v0.4 OFFICEへ戻る</a></span></footer>
 </div>
