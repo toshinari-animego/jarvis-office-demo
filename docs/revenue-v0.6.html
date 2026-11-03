@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="JARVIS OFFICE Revenue v0.6: 安全な表示専用シミュレーション。実AI、Worker、外部APIに接続しません。">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; font-src 'self'; media-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>JARVIS OFFICE — Revenue Operations v0.6 (isolated preview)</title>
+<link rel="stylesheet" href="./revenue-v0.6.css">
+<script type="module" src="./revenue-v0.6.js"></script>
+</head>
+<body>
+<div class="wrapper">
+<header class="topline">
+  <div class="brand"><div class="brand-icon" aria-hidden="true">J</div><div><p class="eyebrow">HERO OPERATIONS / REVENUE</p><h1>JARVIS <span>OFFICE</span> <small>v0.6</small></h1></div></div>
+  <span class="tag">DESIGN SIMULATION · NO-GO</span>
+</header>
+<div class="summary"><div><span class="smalllabel">REVENUE OPERATIONS CONTROL</span><h2>仕事をつなぐ。問題は戻して直す。</h2><p>5役割の連携、HELD時の差戻し、2回修正＋条件付き3回目を再現する表示専用デモ。</p></div><span class="phasepill">Business: jarvis-revenue / LIVE接続なし</span></div>
+<div class="selector"><label for="scenario">表示シナリオ</label><select id="scenario" aria-label="表示シナリオ">
+<option value="normal">A. 収益機会の検討（正常連携）</option>
+<option value="repair">B. 出典不備 → SCOUT修正 → TITAN再検証 → 設計復帰</option>
+<option value="third">C. 2回失敗 → 3回目の例外審査 → 設計復帰</option>
+<option value="thirdDenied">D. 3回目の根拠不足 → HELD継続</option>
+<option value="safety">E. 外部送信結果不明 → SAFETY_HELD</option>
+</select></div>
+<main>
+<div class="layout">
+<section class="stage" aria-label="Revenue専門AIの担当・引き継ぎ経路">
+  <div class="roomtitle"><strong>HEADQUARTERS / REVENUE</strong><span>5 ROLES · 3 APPROVED ARTWORK · 2 PLACEHOLDERS</span></div>
+  <div class="beam" aria-hidden="true"><svg viewBox="0 0 1000 700" preserveAspectRatio="none"><path class="beam-grid" d="M160 170L500 170L840 170 M160 170L330 525L670 525L840 170 M500 170L500 525"/><path id="beam-main" d="M160 170L500 170"/></svg></div>
+  <div class="room-grid">
+    <article class="agent bolt" id="agent-bolt"><div class="avatar"><img id="img-bolt" alt="" aria-hidden="true"></div><div class="station"></div><div class="agent-name">BOLT</div><div class="agent-role">統括・振り分け</div><div class="agent-state">待機</div></article>
+    <article class="agent scout" id="agent-scout"><div class="avatar"><img id="img-scout" alt="" aria-hidden="true"></div><div class="station"></div><div class="agent-name">SCOUT</div><div class="agent-role">調査・根拠</div><div class="agent-state">待機</div></article>
+    <article class="agent titan" id="agent-titan"><div class="avatar"><img id="img-titan" alt="" aria-hidden="true"></div><div class="station"></div><div class="agent-name">TITAN</div><div class="agent-role">独立レビュー</div><div class="agent-state">待機</div></article>
+    <article class="agent atlas" id="agent-atlas"><div class="avatar"><div class="prototype" aria-label="ATLASの仮デザイン">◇</div></div><div class="station"></div><div class="agent-name">ATLAS</div><div class="agent-role">商品・価格仮説</div><div class="agent-state">仮表示</div></article>
+    <article class="agent pulse" id="agent-pulse"><div class="avatar"><div class="prototype pulse" aria-label="PULSEの仮デザイン">▥</div></div><div class="station"></div><div class="agent-name">PULSE</div><div class="agent-role">費用・採算</div><div class="agent-state">仮表示</div></article>
+  </div>
+  <div class="ticket" id="ticket" aria-hidden="true"><b>REVENUE / DESIGN ONLY</b><span>外部送信・課金・自動再試行なし</span></div>
+  <div class="handoff-marker" id="handoffMarker" aria-hidden="true">▣</div>
+  <div class="handoff-caption" aria-hidden="true">DISPLAY ROUTE <strong id="transferRoute">BOLT → SCOUT</strong><span>演出のみ・実処理なし</span></div>
+</section>
+<aside class="console" aria-label="現在の模擬処理">
+  <div class="console-header"><h3>MISSION INSPECTOR</h3><p>表示したシナリオの期待挙動です。実際のAI処理結果ではありません。</p></div>
+  <div class="console-main" aria-live="polite" aria-atomic="true">
+    <div class="progress-row"><span id="stepNum">STEP 01 / 01</span><span id="roleName">BOLT</span></div><div class="meter" role="progressbar" id="storyProgress" aria-label="表示シナリオの進行位置" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="progress"></span></div>
+    <div class="status-line"><i id="statusDot" class="status-dot"></i><strong id="status">DESIGN_ONLY</strong></div>
+    <h4 id="taskTitle">シナリオを選択</h4>
+    <p class="description" id="taskDescription">各専門AIの仕事の流れを順に確認できます。</p>
+    <div class="facts">
+      <div class="fact"><small>設計修正の回数</small><strong id="attempt">0 / 2</strong></div>
+      <div class="fact"><small>次の担当・判断</small><strong id="next">SCOUT</strong></div>
+      <div class="fact"><small>実行権限</small><strong>DENIED</strong></div>
+      <div class="fact"><small>Revenue稼働</small><strong>NO-GO</strong></div>
+    </div>
+    <div class="note" id="evidence">記録・未確認事項を次へ引き継ぎます。</div>
+    <p class="hold-notice" id="holdNotice">HELD中は修正の設計を進めても、実行停止は維持されます。</p><p class="scenario-notice">操作はシナリオの表示位置を切り替えるだけです。実AIの作業・テスト・Owner承認は発生しません。</p>
+  </div>
+  <div class="toolbar">
+    <button class="btn secondary" type="button" id="prev">← 前へ</button>
+    <button class="btn primary" type="button" id="next">次へ →</button>
+    <button class="btn secondary" type="button" id="reset">↺ 最初から</button>
+  </div>
+</aside>
+</div>
+<div class="strip">
+  <div class="chip"><span>設計修正 / 通常枠</span><strong>同一原因 2回</strong><em>担当や工程を変えてもリセット不可</em></div>
+  <div class="chip"><span>3回目 / 例外枠</span><strong>根拠＋独立レビュー＋承認</strong><em>自動的に許可されない</em></div>
+  <div class="chip"><span>実処理の再試行</span><strong>0回</strong><em>送信・課金・Provider・Revenue再開は禁止</em></div>
+</div>
+<section class="timeline" aria-label="選択したシナリオの各段階"><div class="timeline-heading"><h3>HANDOFF / RECOVERY TIMELINE</h3><span>表示位置をタップで切替 · AIは起動しません</span></div><div class="steps" id="steps"></div></section>
+</main>
+<footer class="foot"><span><strong>ISOLATED FRONTEND PREVIEW</strong> — オリジナル採用画像3体を既存ブランチから参照。ATLAS/PULSEは正式キャラクター未採用の仮表示。</span><span>実API・通信・ストレージ・Worker接続なし。C19未認定・F01–F22 0/22・Revenue NO-GO。<a href="../office-v0.3.html">以前の動く3体（v0.3）を開く</a></span></footer>
+</div>
+<noscript><p>この表示用デモの切り替えにはJavaScriptが必要です。</p></noscript>
+</body></html>

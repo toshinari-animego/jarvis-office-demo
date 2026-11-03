@@ -1,28 +1,28 @@
-# JARVIS OFFICE · 3 Agents (independent simulation)
+# JARVIS OFFICE — Revenue v0.6 (standalone static demo)
 
-This repository contains a **standalone, zero-dependency static HTML demo**. It does not connect to the production JARVIS project, GitHub automation, Cloudflare, external APIs, or any payment service. Everything shown is simulated.
+**Status:** Revenue v0.6 is the default demonstration page. No live JARVIS integration, AI, outbound API requests, automation, payment, or production connection. The five-role workflow, HELD handling and exceptional third design revision are scripted illustrations, **not test evidence**.
 
-## Preview
+## Open the pages
 
-Once GitHub Pages is enabled for this repository, open its GitHub Pages site in Safari on an iPad or iPhone (or any modern browser). Do **not** open the HTML through the ChatGPT attachment preview, which may not execute JavaScript.
+- `/` / `index.html`: Revenue v0.6 — BOLT, SCOUT, ATLAS, PULSE, TITAN; scenario selector and visual handoff/HELD timeline.
+- `/office-v0.3.html`: Original v0.3 animated BOLT/TITAN/SCOUT demo. Preserved for comparison and rollback.
+- `/docs/revenue-v0.6.html`: Same Revenue design-only storyboard as a standalone subpage.
 
-## Free setup (GitHub Pages)
+The pre-existing v0.4 3D / articulated character trial remains independently on branch `feature/office-v0.4`, Draft PR #1. It is **not claimed to be merged, released, or formally accepted**.
 
-1. Create a **new public repository** for the demo alone; do not use `jarvis-core` or another existing business repository.
-2. Upload **index.html** and this README.md to its main branch (repository root).
-3. Open repository **Settings → Pages**. Under **Build and deployment**, set **Source = Deploy from a branch**, select **main** and **/(root)**, then save.
-4. Wait for GitHub's deployment status to succeed. Use only the URL GitHub provides in Settings → Pages. Do not assume the site is live before success.
+## Safety and review
 
-Note: On GitHub Free, GitHub Pages uses a public repository. Source code and the deployed demo will be publicly visible. Never add secrets, authentic production data, or credentials. GitHub's terms and free-plan limits may change.
+- This public website uses only static scripts and existing character art; no secrets, user data, production integrations, local storage, real payments, emails, or network APIs are involved by design. The Revenue HTML declares `connect-src 'none'`.
+- Revenue remains **NO-GO**. `DESIGN_RESUMED` in the demonstration is not permission to restart Revenue. C19 certification and C58 F01–F22 formal acceptance are separate, pending procedures.
+- Mobile/Safari/Chrome rendering and animation were **not executed or formally verified** as part of the v0.6 promotion. See `docs/revenue-v0.6-review.md`.
+- The original v0.3 default site commit is `92ad2b3b41e14236fe50462920d7152064dbb58d`. It is preserved on `archive/office-v0.3-before-revenue-v0.6` and in Git history.
+- No changes to `jarvis-core`, Worker, D1, Queue, Stripe, GitHub Pages settings or the separate v0.4 Draft PR are intended.
 
-## Demo interactions
+## Source structure
 
-- Simulation starts automatically when the page opens.
-- BOLT vanishes as a lightning effect, then reappears near the receiving agent.
-- TITAN waddles and works at the desk; SCOUT hovers.
-- The receiver takes the deliverable, and completed handoffs are logged only after the simulated handoff succeeds.
-- Use restart / pause / choose sender and receiver for arbitrary directed transfers among the three agents.
+- `index.html`: Published Revenue v0.6 entrypoint
+- `office-v0.3.html`: Original animated three-agent page
+- `docs/revenue-v0.6.css`, `docs/revenue-v0.6.js`: Presentation logic and styles
+- `approved-image-data.js`: Locally embedded previews of approved BOLT, SCOUT and TITAN art; ATLAS and PULSE remain explicitly provisional display placeholders
 
-## Safety
-
-Read-only visual simulation, no analytics, no cookies, no external dependencies, no external fetch or network calls. This demonstration contains no production data and should remain separate from all production systems.
+**Publishing/URL verification:** A Git commit does not prove that GitHub Pages has deployed successfully. Confirm the published URL in GitHub Settings → Pages and on a real device before treating deployment as confirmed.
