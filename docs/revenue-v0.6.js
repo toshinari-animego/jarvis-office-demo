@@ -52,47 +52,104 @@ const episodes = {
 };
 
 const names={bolt:'BOLT',scout:'SCOUT',atlas:'ATLAS',pulse:'PULSE',titan:'TITAN',owner:'Owner'};
-const statuses={held:['HELD','SAFETY_HELD','THIRD_ATTEMPT_DENIED','ESCALATED'],warning:['REVIEW_WITH_GAPS','THIRD_ATTEMPT_REVIEW_PENDING']};
 let scenario='normal';
 let step=0;
+
+// These flags describe the story's DESIGN hold, never actual Revenue/Worker state.
+function isDesignHeld(){
+  return scenario==='safety'||scenario==='thirdDenied'
+    || (scenario==='repair' && step<4)
+    || (scenario==='third' && step<9);
+}
+function moveIllustrativePacket(role, held){
+  const stage=document.querySelector('.stage');
+  const marker=$('handoffMarker');
+  if(!stage||!marker)return;
+  const bounds=stage.getBoundingClientRect();
+  const station=role==='owner'?null:$('agent-'+role);
+  let x=bounds.width/2;
+  let y=bounds.height-37;
+  if(station){
+    const p=station.getBoundingClientRect();
+    x=p.left-bounds.left+p.width*.82;
+    y=p.top-bounds.top+Math.min(61,p.height*.4);
+  }
+  marker.style.left=Math.round(x)+'px';
+  marker.style.top=Math.round(y)+'px';
+  marker.classList.toggle('held',held);
+  marker.classList.toggle('safe',scenario==='safety');
+}
 function render(){
-  const steps=episodes[scenario], [role,title,state,description,count,next,note]=steps[step];
-  $('stepNum').textContent='STEP '+String(step+1).padStart(2,'0')+' / '+String(steps.length).padStart(2,'0');
+  const allSteps=episodes[scenario], [role,title,state,description,count,next,note]=allSteps[step];
+  const held=isDesignHeld();
+  const final=step===allSteps.length-1;
+  $('stepNum').textContent='STEP '+String(step+1).padStart(2,'0')+' / '+String(allSteps.length).padStart(2,'0');
   $('roleName').textContent=names[role];
-  $('taskTitle').textContent=title; $('status').textContent=state;
+  $('taskTitle').textContent=title;
+  $('status').textContent=held&&!state.includes('HELD')?state+' · HELD継続':state;
   $('taskDescription').textContent=description;
   $('attempt').textContent=count;
   $('next').textContent=next;
   $('evidence').textContent=note;
-  const danger=statuses.held.some(s=>state.includes(s));
-  const caution=danger||statuses.warning.some(s=>state.includes(s));
-  $('statusDot').classList.toggle('held',danger);
-  $('evidence').classList.toggle('warn',caution);
-  $('ticket').classList.toggle('critical',danger);
-  $('ticket').querySelector('b').textContent=danger?'HELD / DESIGN ONLY':role==='owner'?'OWNER REVIEW / DEMO':names[role]+' / DESIGN ONLY';
-  $('ticket').querySelector('span').textContent=state.includes('SAFETY_HELD')?'安全保留・再試行禁止':state.includes('DESIGN_RESUMED')?'設計だけ復帰 / Revenue NO-GO':'外部操作・送信・課金禁止';
-  $('progress').style.width=String(((step+1)/steps.length)*100)+'%';
-  $('prev').disabled=step===0;$('next').disabled=step===steps.length-1;
-  $('next').textContent=step===steps.length-1?'シナリオ終了':'次へ →';
+  $('statusDot').classList.toggle('held',held);
+  $('evidence').classList.toggle('warn',held);
+  $('ticket').classList.toggle('critical',held);
+  $('ticket').querySelector('b').textContent=held?'HELD / DESIGN ONLY':role==='owner'?'OWNER REVIEW / DEMO':names[role]+' / DESIGN ONLY';
+  $('ticket').querySelector('span').textContent=scenario==='safety'
+    ?'安全保留・外部再試行は禁止'
+    :state==='DESIGN_RESUMED'
+      ?'設計のみ復帰・RevenueはNO-GO'
+      :'外部送信・課金・稼働再開は禁止';
+  $('holdNotice').textContent=held
+    ?'設計資料の改訂・審査を表示していてもHELDは継続。実処理は再開しません。'
+    :'この画面の「進行」は架空の設計工程のみ。実処理の許可は常にDENIED。';
+  $('holdNotice').classList.toggle('held',held);
+  $('progress').style.width=String(((step+1)/allSteps.length)*100)+'%';
+  $('prev').disabled=step===0;
+  $('next').disabled=final;
+  $('next').textContent=final?'表示の終点':'次へ →';
   for(const id of ['bolt','scout','atlas','pulse','titan']){
     const el=$('agent-'+id),current=id===role;
     el.classList.toggle('current',current);
-    el.classList.toggle('held',current&&danger);
-    el.querySelector('.agent-state').textContent=current?(danger?'HELD':state.includes('REVIEW')?'確認中':'担当中'):'待機';
+    el.classList.toggle('held',current&&held);
+    el.querySelector('.agent-state').textContent=current
+      ?held?'HELD中':state.includes('REVIEW')?'確認中':'表示中'
+      :['atlas','pulse'].includes(id)?'仮表示':'待機';
   }
-  const list=$('steps');list.replaceChildren();
-  for(let i=0;i<steps.length;i++){
-    const div=document.createElement('div');
-    const s=steps[i];const hold=s[2].includes('HELD')||s[2].includes('DENIED');
-    div.className='step'+(i<step?' done':'')+(i===step?' now':'')+(i===step&&hold?' hold':'');
-    div.textContent=(i+1)+' · '+names[s[0]];
-    list.appendChild(div);
+  const list=$('steps');
+  list.replaceChildren();
+  for(let i=0;i<allSteps.length;i++){
+    const s=allSteps[i];
+    const b=document.createElement('button');
+    b.type='button';
+    b.dataset.step=String(i);
+    b.className='step'+(i<step?' done':'')+(i===step?' now':'')+(i===step&&held?' hold':'');
+    b.textContent=(i+1)+' · '+names[s[0]];
+    b.setAttribute('aria-label',String(i+1)+'番目を表示: '+names[s[0]]+'、'+s[1]);
+    if(i===step)b.setAttribute('aria-current','step');
+    list.appendChild(b);
   }
-  const active=role==='owner'?null:role;
-  $('beam-main').setAttribute('class',active?'active':'');
+  const previousRole=step>0?allSteps[step-1][0]:role;
+  $('transferRoute').textContent=step===0
+    ?names[role]+' → '+next
+    :names[previousRole]+' → '+names[role];
+  $('beam-main').classList.toggle('active',role!=='owner'&&!held);
+  moveIllustrativePacket(role,held);
 }
-$('scenario').addEventListener('change',event=>{if(episodes[event.target.value]){scenario=event.target.value;step=0;render();}});
+$('scenario').addEventListener('change',event=>{
+  if(episodes[event.target.value]){scenario=event.target.value;step=0;render();}
+});
 $('prev').addEventListener('click',()=>{step=Math.max(0,step-1);render();});
 $('next').addEventListener('click',()=>{step=Math.min(episodes[scenario].length-1,step+1);render();});
 $('reset').addEventListener('click',()=>{step=0;render();});
+$('steps').addEventListener('click',event=>{
+  const button=event.target.closest('button[data-step]');
+  if(!button)return;
+  const proposed=Number(button.dataset.step);
+  if(Number.isInteger(proposed)&&proposed>=0&&proposed<episodes[scenario].length){
+    step=proposed;
+    render();
+  }
+});
+window.addEventListener('resize',()=>moveIllustrativePacket(episodes[scenario][step][0],isDesignHeld()),{passive:true});
 render();
