@@ -130,8 +130,11 @@ function render(){
     ?'設計資料の改訂・審査を表示していてもHELDは継続。実処理は再開しません。'
     :'この画面の「進行」は架空の設計工程のみ。実処理の許可は常にDENIED。';
   $('holdNotice').classList.toggle('held',held);
-  $('progress').style.width=String(((step+1)/allSteps.length)*100)+'%';
-  $('progress').setAttribute('aria-label','シナリオ表示位置 '+(step+1)+' / '+allSteps.length);
+  const viewPercent=Math.round((step+1)/allSteps.length*100);
+  $('progress').style.width=viewPercent+'%';
+  $('storyProgress').setAttribute('aria-valuenow',String(viewPercent));
+  $('storyProgress').setAttribute('aria-valuetext',
+    '表示 '+(step+1)+' / '+allSteps.length+'。実行状況ではありません。');
   $('prev').disabled=step===0;
   $('next').disabled=final;
   $('next').textContent=final?'表示の終点':'次へ →';
